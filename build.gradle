@@ -1,0 +1,50 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '1.2.2'
+}
+
+group 'co.amasel'
+version '1.0-SNAPSHOT'
+
+
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+version = '3.2.1'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+    flatDir {
+        dirs = [
+                "$projectDir/mws-lib/MWSOrdersJavaClientLibrary/dist",
+                "$projectDir/mws-lib/MWSProductsJavaClientLibrary/dist",
+                "$projectDir/mws-lib/amazon-mws-feeds/dist",
+        ]
+    }
+}
+
+dependencies {
+    compile "org.codehaus.woodstox:woodstox-core-asl:4.4.1"
+    compile "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.6.3"
+    compile "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.4.0"
+    compile "io.vertx:vertx-core:$version"
+    compile "io.vertx:vertx-lang-groovy:$version"
+    compile "io.vertx:vertx-web:$version"
+    compile "io.vertx:vertx-unit:$version"
+    compile 'org.jodd:jodd-bean:3.6.7'
+    compile "org.apache.httpcomponents:httpclient:4.2.3"
+    compile name: "MWSClientJavaRuntime-1.0"
+    compile name: "MWSProducts_2011-10-01_v2015-09-01"
+    compile name: "MWSOrders_2013-09-01_v2015-09-24"
+    compile name: "MaWSJavaClientLibrary-1.1"
+}
+
+mainClassName = 'Main'
+
+shadowJar {
+    classifier = 'fat'
+    mergeServiceFiles {
+        include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
+    }
+}
