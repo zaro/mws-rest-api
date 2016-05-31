@@ -19,7 +19,7 @@ public class ClassEnumerator {
        // System.out.println("ClassDiscovery: " + msg);
     }
 
-    private static Class<?> loadClass(String className) {
+    public static Class<?> loadClass(String className) {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {

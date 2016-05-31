@@ -7,7 +7,6 @@ import com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersConf
 import com.amazonservices.mws.products.MWSEndpoint;
 import com.amazonservices.mws.products.MarketplaceWebServiceProductsConfig;
 import co.amasel.model.products.*;
-import co.amasel.model.feeds_reports.*;
 import co.amasel.model.orders.*;
 
 
@@ -18,7 +17,9 @@ import java.util.HashMap;
 /**
  * Created by zaro on 11/23/15.
  */
+
 public class MwsMethodMap {
+/*
     static HashMap<String, RequestType> methodMap = new HashMap<>();
 
     static RequestType get(String method){
@@ -133,7 +134,7 @@ public class MwsMethodMap {
         initFeedsReports();
     }
 
-    protected static class RequestType /*implements MwsRequestType*/ {
+    protected static class RequestType /*implements MwsRequestType* / {
 
         private final String operationName;
         private final Class<? extends AmaselMwsObject> responseClass;
@@ -176,4 +177,5 @@ public class MwsMethodMap {
             ((AmaselMwsObject)response).setMwsHeaderMetadata(rhmd);
         }
     }
+*/
 }

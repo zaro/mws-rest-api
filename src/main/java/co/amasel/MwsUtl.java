@@ -499,7 +499,6 @@ public class MwsUtl {
         } else {
             throw new IllegalArgumentException("Invalid Signature Version specified");
         }
-        System.out.println("STRING_TO_SIGN:|"+ stringToSign +"|");
         return sign(stringToSign, aswSecretKey, algorithm);
     }
 

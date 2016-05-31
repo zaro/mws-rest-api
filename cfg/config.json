@@ -1,0 +1,11 @@
+# JSON with comments
+# Run trough :
+# sed 's/^\s*#.*//' config.json
+# to get plain json
+{
+  "ssl" : {
+    "keyPath"  : "certbot/live/foggly-backup.ftp.sh/privkey.pem",
+    "certPath" : "certbot/live/foggly-backup.ftp.sh/fullchain.pem"
+  },
+  "port" : 8181
+}

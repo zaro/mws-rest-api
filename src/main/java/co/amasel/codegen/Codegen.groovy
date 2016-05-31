@@ -1,5 +1,7 @@
 package co.amasel.codegen
 
+import co.amasel.misc.RuntimeConfiguration
+
 import javax.xml.bind.annotation.XmlAttribute
 import javax.xml.bind.annotation.XmlElement
 import javax.xml.bind.annotation.XmlEnum
@@ -13,141 +15,97 @@ import java.lang.reflect.Type
 class Codegen {
     Codegen() {
     }
-    static def classTemplates=[
-            "feeds_reports": '''\
-package <%= packageName %>;
 
-import co.amasel.model.common.AmaselMwsObject;
-
-import com.amazonservices.mws.client.MwsObject;
-import com.amazonservices.mws.client.MwsReader;
-import com.amazonservices.mws.client.MwsWriter;
-import com.amazonservices.mws.client.MwsResponseHeaderMetadata;
-
-import com.amazonaws.mws.model.*;
-
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.List;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-
-public class <%= className %> extends <%= fullClassName %> implements AmaselMwsObject {
-    public void readFragmentFrom(MwsReader reader){
-<%  props.each { p ->
-        if( p.attribute ){ %>
-            <%= p.name %> = reader.readAttribute("<%= p.elementName  %>", <%= p.type %>.class);
-       <%} else if( p.enum ) {%>
-            <%= p.name %> = <%= className %>.fromValue( reader.read("<%= p.elementName  %>", String.class) ) ;
-       <%} else if( p.type == "List" ) {%>
-            <%= p.name %> = (List)reader.readList("<%= p.elementName  %>", <%= p.pTypeSimple %>.class);
-       <%} else {%>
-            <%= p.name %> = reader.read("<%= p.elementName  %>", <%= p.type %>.class);
-       <%}
-} %>
+    static def getPackageConfig(String className){
+        def cls = ClassEnumerator.loadClass(className);
+        def cfg = cls.newInstance()
+        String serviceVersion = cfg.getServiceVersion()
+        String servicePath = ""
+        cfg.setServiceURL("https://mws.amazonservices.co.uk");
+        try {
+            URI endPoint = new URI(cfg.getServiceURL());
+            // No leading '/' in path, fucks up MwsConnection later
+            servicePath = endPoint.getPath();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return;
+        }
+        if(servicePath.isEmpty()){
+            servicePath = "/";
+        }
+        return [
+                servicePath: servicePath,
+                serviceVersion: serviceVersion
+        ]
     }
 
-    public String toJSON(){ return "NOT IMPLEMENTED"; }
-
-    public String toJSONFragment(){ return "NOT IMPLEMENTED"; }
-
-    public String toXML(){ return "NOT IMPLEMENTED";}
-
-    public String toXMLFragment(){ return "NOT IMPLEMENTED";}
-
-    public void writeFragmentTo(MwsWriter writer){
-<%  props.each { p ->
-        if( p.attribute ){ %>
-             writer.readAttribute("<%= p.elementName  %>", <%= p.name %>);
-       <%} else if( p.enum ) {%>
-            writer.write("<%= p.elementName  %>", <%= p.name %>.toString() ) ;
-       <%} else if( p.type == "List" ) {%>
-            writer.writeList("<%= p.elementName  %>", <%= p.name %>);
-       <%} else {%>
-            writer.write("<%= p.elementName  %>", <%= p.name %>);
-       <%}
-} %>
-    }
-
-    public void writeTo(MwsWriter w){
-        w.write("XML_NS", "<%= className %>",this);
-    }
-
-    <% if ( className.endsWith("Response") ) { %>
-    protected MwsResponseHeaderMetadata responseHeaderMetadata;
-    public MwsResponseHeaderMetadata getMwsHeaderMetadata() {
-        return this.responseHeaderMetadata;
-    }
-    public void setMwsHeaderMetadata(MwsResponseHeaderMetadata hmd){
-        this.responseHeaderMetadata = hmd;
-    }
-    <% } else { %>
-    public MwsResponseHeaderMetadata getMwsHeaderMetadata() {
-        return null;
-    }
-    public void setMwsHeaderMetadata(MwsResponseHeaderMetadata hmd){
-    }
-    <% } %>
-}
-    ''',
-        "*": '''\
-package <%= packageName %>;
-import com.amazonservices.mws.client.MwsResponseHeaderMetadata;
-import co.amasel.model.common.AmaselMwsObject;
-import <%= sourcePackageName %>.ResponseHeaderMetadata;
-
-
-public class <%= className %> extends <%= fullClassName %> implements AmaselMwsObject {
-    public <%= className %>() {
-        super();
-    }
-
-    <% if ( className.endsWith("Response") ) { %>
-    public MwsResponseHeaderMetadata getMwsHeaderMetadata() {
-        return getResponseHeaderMetadata();
-    }
-    public void setMwsHeaderMetadata(MwsResponseHeaderMetadata hmd){
-        setResponseHeaderMetadata(new ResponseHeaderMetadata(hmd));
-    }
-    <% } else { %>
-    public MwsResponseHeaderMetadata getMwsHeaderMetadata() {
-        return null;
-    }
-    public void setMwsHeaderMetadata(MwsResponseHeaderMetadata hmd){
-    }
-    <% } %>
-}
-'''
-    ]
     static void main(String[] args){
-        def outDir = "/Users/zaro/dev/mws-rest-api/src/main/java/co/amasel/model"
+
+        //def outDir = "/Users/zaro/dev/mws-rest-api/src/main/java/co/amasel/"
+        def outDir = RuntimeConfiguration.getAppDir() + "src/main/java/co/amasel/"
+
         def dir = new File(outDir)
         dir.mkdirs()
-        def packNames = [   MaWS:["com.amazonaws.mws.model","feeds_reports"],
-                            MWSProducts:["com.amazonservices.mws.products.model","products" ],
-                            MWSOrders: ["com.amazonservices.mws.orders._2013_09_01.model","orders" ]]
+        def packNames = [  MaWS:[
+                                model:"com.amazonaws.mws.model",
+                                templateName : "feeds_reports",
+                                outputModel: { String className ->
+                                    if (className.indexOf("Feed") >= 0) {
+                                        return ["feeds"];
+                                    }
+                                    if (className.indexOf("Report") >= 0) {
+                                        return ["reports"];
+                                    }
+                                    return ["feeds", "reports"];
+                                },
+                                configClass : "com.amazonaws.mws.MarketplaceWebServiceConfig"
+                            ],
+                            MWSProducts:[
+                                    model:"com.amazonservices.mws.products.model",
+                                    outputModel:  "products",
+                                    configClass: "com.amazonservices.mws.products.MarketplaceWebServiceProductsConfig",
+                            ],
+                            MWSOrders: [
+                                    model: "com.amazonservices.mws.orders._2013_09_01.model",
+                                    outputModel:  "orders",
+                                    configClass: "com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersConfig"
+                            ]
+        ]
         for(url in  ClassEnumerator.getClassPath()){
             def fileName = url.getPath().split('/')[-1]
             for( pack in packNames) {
                 if (fileName.startsWith(pack.key)) {
-                    println(fileName)
-                    def sourcePackageName = pack.value[0]
-                    def modelName = pack.value[1]
-                    def templateString = classTemplates.containsKey(modelName) ? classTemplates[modelName] : classTemplates["*"]
+                    println("Procesing: " + fileName)
+                    def sourcePackageName = pack.value.model
+                    def reqRespMap = [:]
+                    def modelName = pack.value.outputModel
+                    def outModelNamesFun = null
+                    if (pack.value.outputModel instanceof Closure){
+                        modelName = pack.value.templateName
+                        outModelNamesFun = pack.value.outputModel
+                    }
+
+                    def templateString = ModelTemplate.get(modelName)
                     def template = new groovy.text.StreamingTemplateEngine().createTemplate(templateString)
 
+
                     for (cls in ClassEnumerator.processJarfile(url, sourcePackageName)) {
-                        if(cls.isInterface() || cls.isEnum()){
+                        if (cls.isInterface() || cls.isEnum()) {
                             continue
                         }
-                        println(cls.getSimpleName())
-                        if (["package-info","MWSResponse","FeedProcessingStatus", "ResponseMetadata","ResponseHeaderMetadata","ObjectFactory","ProductsUtil" ].contains(cls.getSimpleName()) || cls.getName().contains('$')){
+                        if (["package-info", "MWSResponse", "FeedProcessingStatus", "ResponseMetadata", "ResponseHeaderMetadata", "ObjectFactory", "ProductsUtil"].contains(cls.getSimpleName()) || cls.getName().contains('$')) {
                             continue
+                        }
+                        def classSimpleName = cls.getSimpleName()
+                        String methodName = null
+                        if (classSimpleName.endsWith("Request") || classSimpleName.endsWith("Response")) {
+                            methodName = classSimpleName.replaceAll("Request\$|Response\$", "")
                         }
                         XmlType[] xmlTypes = cls.getAnnotationsByType(XmlType)
                         def props = []
-                        if(xmlTypes.length){
+                        if (xmlTypes.length) {
                             def xmlElementTypeName = xmlTypes[0].name()
-                            for(property in xmlTypes[0].propOrder()){
+                            for (property in xmlTypes[0].propOrder()) {
                                 if (property.length() == 0)
                                     continue
                                 def field = cls.getDeclaredField(property)
@@ -156,51 +114,111 @@ public class <%= className %> extends <%= fullClassName %> implements AmaselMwsO
                                 Type parameterizedType = field.getGenericType();
                                 String pType = null
                                 String pTypeSimple = null
-                                if (parameterizedType != null && parameterizedType instanceof ParameterizedType){
-                                    pType = ((ParameterizedType)parameterizedType).getActualTypeArguments()[0].getTypeName()
-                                    def l =  pType.split("\\.")
-                                    pTypeSimple = l[l.length-1]
+                                if (parameterizedType != null && parameterizedType instanceof ParameterizedType) {
+                                    pType = ((ParameterizedType) parameterizedType).getActualTypeArguments()[0].getTypeName()
+                                    def l = pType.split("\\.")
+                                    pTypeSimple = l[l.length - 1]
                                 }
 
                                 XmlElement[] elementAnnotations = field.getAnnotationsByType(XmlElement)
-                                if(elementAnnotations.length){
+                                if (elementAnnotations.length) {
                                     elementName = elementAnnotations[0].name()
                                 }
                                 XmlAttribute[] attributeAnnotations = field.getAnnotationsByType(XmlAttribute)
-                                if(attributeAnnotations.length){
+                                if (attributeAnnotations.length) {
                                     attirbute = true
-                                    if( attributeAnnotations[0].name())
+                                    if (attributeAnnotations[0].name())
                                         elementName = attributeAnnotations[0].name()
                                 }
-                                if(field.getType().getSimpleName().endsWith("Stream")){
+                                if (field.getType().getSimpleName().endsWith("Stream")) {
                                     continue
                                 }
                                 props.push([
-                                        type: field.getType().getSimpleName(),
-                                        name: property,
+                                        type       : field.getType().getSimpleName(),
+                                        name       : property,
                                         elementName: elementName,
-                                        attribute: attirbute,
-                                        enum: field.getDeclaringClass().isEnum(),
-                                        pType: pType,
+                                        attribute  : attirbute,
+                                        enum       : field.getDeclaringClass().isEnum(),
+                                        pType      : pType,
                                         pTypeSimple: pTypeSimple
                                 ])
                             }
                         }
-                        def binding =[
-                                packageName: 'co.amasel.model.' + modelName,
-                                sourcePackageName : sourcePackageName,
-                                fullClassName: cls.getName(),
-                                className: cls.getSimpleName(),
-                                props: props
-                        ]
-                        def modelDir = new File(dir, modelName)
+
+
+                        def outModelNames;
+                        if (outModelNamesFun != null) {
+                            outModelNames = outModelNamesFun(cls.getSimpleName())
+                        } else {
+                            outModelNames = [modelName]
+                        }
+                        for (outModelName in outModelNames) {
+                            if( !reqRespMap.containsKey(outModelName) ){
+                                reqRespMap[outModelName] = [:]
+                            }
+                            if (methodName){
+                                reqRespMap[outModelName][methodName] = 1 + (reqRespMap[outModelName][methodName] ? reqRespMap[outModelName][methodName] : 0)
+                            }
+                            def binding = [
+                                    packageName      : 'co.amasel.model.' + outModelName,
+                                    sourcePackageName: sourcePackageName,
+                                    fullClassName    : cls.getName(),
+                                    className        : cls.getSimpleName(),
+                                    props            : props
+                            ]
+
+                            def modelDir = new File(new File(dir, "model"), outModelName)
+                            modelDir.mkdirs()
+                            def outFile = new File(modelDir, cls.getSimpleName() + ".java")
+                            FileOutputStream out = new FileOutputStream(outFile)
+                            String t = template.make(binding)
+                            out.write(t.bytes)
+                            out.close()
+                        }
+                    }
+
+
+                    templateString = MethodMapTemplate.get(modelName)
+                    template = new groovy.text.StreamingTemplateEngine().createTemplate(templateString)
+                    for (clientModelName in reqRespMap.keySet()) {
+                        def apiMethods = []
+                        println("--- Generating model "+ clientModelName + "---")
+                        reqRespMap[clientModelName].each { k, v ->
+                            if (v != 2) {
+                                println "Mismatched req/res : " + k + "  : " + v
+                                return
+                            }
+                            apiMethods.push([methodName: k])
+                        }
+
+                        def modelDir = new File(new File(dir, "client"), clientModelName)
                         modelDir.mkdirs()
-                        def outFile = new File(modelDir, cls.getSimpleName() + ".java")
+                        def outFile = new File(modelDir, "MethodMap.java")
                         FileOutputStream out = new FileOutputStream(outFile)
-                        String t = template.make(binding)
+                        String t = template.make([
+                                packageName      : 'co.amasel.client.' + clientModelName,
+                                modelPackage     : 'co.amasel.model.' + clientModelName + '.*',
+                                sourcePackageName: sourcePackageName,
+                                apiMethods       : apiMethods
+                        ] << getPackageConfig(pack.value.configClass) )
                         out.write(t.bytes)
                         out.close()
-                        //println template.make(binding)
+
+                        println("--- Generating client "+ clientModelName + "---")
+                        def clientTemplateString = ClientTemplate.get(modelName)
+                        def clientTemplate = new groovy.text.StreamingTemplateEngine().createTemplate(clientTemplateString)
+                        for(method in apiMethods){
+                            outFile = new File(modelDir, method.methodName + ".java")
+                            out = new FileOutputStream(outFile)
+                            t = clientTemplate.make([
+                                    packageName      : 'co.amasel.client.' + clientModelName,
+                                    modelPackage     : 'co.amasel.model.' + clientModelName + '.*',
+                                    className        : method.methodName,
+                            ] << getPackageConfig(pack.value.configClass) )
+                            out.write(t.bytes)
+                            out.close()
+                        }
+
                     }
                 }
             }

@@ -1,3 +1,4 @@
+import co.amasel.misc.JsonObjectToBean
 import com.amazonservices.mws.products.model.GetCompetitivePricingForASINRequest
 import com.amazonservices.mws.products.model.GetCompetitivePricingForSKURequest
 import com.amazonservices.mws.products.model.GetLowestOfferListingsForASINRequest
@@ -27,7 +28,7 @@ suite.test("ListMatchingProducts", { context ->
                 "QueryContextId" : "All"
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, ListMatchingProductsRequest.class)
+    def req = JsonObjectToBean.toBean(json, ListMatchingProductsRequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
     context.assertEquals("marketPlaceId", req.getMarketplaceId())
@@ -44,7 +45,7 @@ suite.test("GetMatchingProduct", { context ->
                 "ASINList" : [ "id1", "id2", "id3" ]
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, GetMatchingProductRequest.class)
+    def req = JsonObjectToBean.toBean(json, GetMatchingProductRequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
     context.assertEquals("marketPlaceId", req.getMarketplaceId())
@@ -61,7 +62,7 @@ suite.test("GetMatchingProductForIdRequest", { context ->
                 "IdList" : [ "id1", "id2", "id3" ]
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, GetMatchingProductForIdRequest.class)
+    def req = JsonObjectToBean.toBean(json, GetMatchingProductForIdRequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
     context.assertEquals("marketPlaceId", req.getMarketplaceId())
@@ -78,7 +79,7 @@ suite.test("GetCompetitivePricingForSKU", { context ->
                 "SellerSKUList" : [ "id1", "id2", "id3" ]
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, GetCompetitivePricingForSKURequest.class)
+    def req = JsonObjectToBean.toBean(json, GetCompetitivePricingForSKURequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
     context.assertEquals("marketPlaceId", req.getMarketplaceId())
@@ -94,7 +95,7 @@ suite.test("GetCompetitivePricingForASIN", { context ->
                 "ASINList" : [ "id1", "id2", "id3" ]
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, GetCompetitivePricingForASINRequest.class)
+    def req = JsonObjectToBean.toBean(json, GetCompetitivePricingForASINRequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
     context.assertEquals("marketPlaceId", req.getMarketplaceId())
@@ -112,7 +113,7 @@ suite.test("GetLowestOfferListingsForSKU", { context ->
                 "ExcludeMe" : true
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, GetLowestOfferListingsForSKURequest.class)
+    def req = JsonObjectToBean.toBean(json, GetLowestOfferListingsForSKURequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
     context.assertEquals("marketPlaceId", req.getMarketplaceId())
@@ -131,7 +132,7 @@ suite.test("GetLowestOfferListingsForASIN", { context ->
                 "ExcludeMe" : true
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, GetLowestOfferListingsForASINRequest.class)
+    def req = JsonObjectToBean.toBean(json, GetLowestOfferListingsForASINRequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
     context.assertEquals("marketPlaceId", req.getMarketplaceId())
@@ -149,7 +150,7 @@ suite.test("GetLowestPricedOffersForSKU", { context ->
                 "ItemCondition" : "Any"
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, GetLowestPricedOffersForSKURequest.class)
+    def req = JsonObjectToBean.toBean(json, GetLowestPricedOffersForSKURequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
     context.assertEquals("marketPlaceId", req.getMarketplaceId())
@@ -167,7 +168,7 @@ suite.test("GetLowestPricedOffersForASIN", { context ->
                 "ItemCondition" : "Any"
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, GetLowestPricedOffersForASINRequest.class)
+    def req = JsonObjectToBean.toBean(json, GetLowestPricedOffersForASINRequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
     context.assertEquals("marketPlaceId", req.getMarketplaceId())
@@ -184,7 +185,7 @@ suite.test("GetMyPriceForSKU", { context ->
                 "SellerSKUList" : [ "id1", "id2", "id3" ]
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, GetMyPriceForSKURequest.class)
+    def req = JsonObjectToBean.toBean(json, GetMyPriceForSKURequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
     context.assertEquals("marketPlaceId", req.getMarketplaceId())
@@ -200,7 +201,7 @@ suite.test("GetMyPriceForASIN", { context ->
                 "ASINList" : [ "id1", "id2", "id3" ]
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, GetMyPriceForASINRequest.class)
+    def req = JsonObjectToBean.toBean(json, GetMyPriceForASINRequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
     context.assertEquals("marketPlaceId", req.getMarketplaceId())
@@ -216,7 +217,7 @@ suite.test("GetProductCategoriesForSKU", { context ->
                 "SellerSKU" :  "id1"
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, GetProductCategoriesForSKURequest.class)
+    def req = JsonObjectToBean.toBean(json, GetProductCategoriesForSKURequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
     context.assertEquals("marketPlaceId", req.getMarketplaceId())
@@ -232,7 +233,7 @@ suite.test("GetProductCategoriesForASIN", { context ->
                 "ASIN" :  "id1"
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, GetProductCategoriesForASINRequest.class)
+    def req = JsonObjectToBean.toBean(json, GetProductCategoriesForASINRequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
     context.assertEquals("marketPlaceId", req.getMarketplaceId())
@@ -246,7 +247,7 @@ suite.test("GetServiceStatusRequest", { context ->
                 "MWSAuthToken" : "authToken"
             }
     ''');
-    def req = co.amasel.JsonObjectToBean.toBean(json, GetServiceStatusRequest.class)
+    def req = JsonObjectToBean.toBean(json, GetServiceStatusRequest.class)
     context.assertEquals("sellerid", req.getSellerId())
     context.assertEquals("authToken", req.getMWSAuthToken())
 })
