@@ -48,5 +48,7 @@
     <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.6" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.2.3" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.2.2" level="project" />
+    <orderEntry type="library" name="Gradle: commons-io:commons-io:2.5" level="project" />
+    <orderEntry type="library" name="Gradle: io.vertx:vertx-lang-js:3.2.1" level="project" />
   </component>
 </module>

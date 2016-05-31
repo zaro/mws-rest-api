@@ -2,6 +2,7 @@ package co.amasel;
 
 import co.amasel.client.common.*;
 import co.amasel.presets.PresetDb;
+import co.amasel.server.PluginShared;
 import com.amazonservices.mws.client.MwsObject;
 import com.amazonservices.mws.client.MwsResponseHeaderMetadata;
 import com.amazonservices.mws.products.MarketplaceWebServiceProductsException;
@@ -52,10 +53,7 @@ public class MwsAsyncHandler extends AbstractVerticle{
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-    Router mainRouter ;
-
-    public MwsAsyncHandler(Router mainRouter) {
-        this.mainRouter = mainRouter;
+    public MwsAsyncHandler() {
     }
 
     public void sendError(RoutingContext context, Throwable e){
@@ -178,7 +176,7 @@ public class MwsAsyncHandler extends AbstractVerticle{
             handleRequest(r);
         });
 
-        mainRouter.mountSubRouter("/mws", restAPI);
+        PluginShared.getMainRouter().mountSubRouter("/mws", restAPI);
 
         logger.info("Start /mws/* service");
 

@@ -2,6 +2,7 @@ import co.amasel.MwsAsyncHandler;
 import co.amasel.misc.RuntimeConfiguration;
 import co.amasel.presets.PresetDb;
 import co.amasel.presets.PresetsService;
+import co.amasel.server.PluginShared;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
@@ -14,6 +15,11 @@ import io.vertx.core.net.PemKeyCertOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.LoggerHandler;
 import io.vertx.ext.web.handler.ResponseTimeHandler;
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by zaro on 11/21/15.
@@ -36,13 +42,26 @@ public class MwsRestApiMain {
 
         Vertx vertx = Vertx.vertx(options);
 
-        Router mainRouter  = Router.router(vertx);
+        PluginShared.setMainRouter( Router.router(vertx) );
+        DeploymentOptions deploymentOptions = new DeploymentOptions();
 
         Verticle myVerticle = new MwsTest();
-        Verticle myAVerticle = new MwsAsyncHandler(mainRouter);
+        Verticle myAVerticle = new MwsAsyncHandler();
         //vertx.deployVerticle(myVerticle, new DeploymentOptions());
-        vertx.deployVerticle(myAVerticle, new DeploymentOptions());
-        vertx.deployVerticle(new PresetsService(mainRouter));
+        vertx.deployVerticle(myAVerticle, deploymentOptions);
+        vertx.deployVerticle(new PresetsService(), deploymentOptions);
+
+        deploymentOptions.setExtraClasspath(Arrays.asList("co.amasel.*"));
+
+        File pluginsDir = new File(RuntimeConfiguration.getAppDir(), "plugins");
+        logger.info("Loading plugins in: " + pluginsDir.getPath());
+        for(File file : pluginsDir.listFiles()){
+            if(FilenameUtils.isExtension(file.getName(),new String[]{"js", "rb", "groovy"})){
+                logger.info("Starting : " + file.getAbsolutePath());
+                vertx.deployVerticle(file.getAbsolutePath(), deploymentOptions);
+            }
+        }
+
 
 
         logger.debug("Config:" + RuntimeConfiguration.loadConfig().encodePrettily());
@@ -65,7 +84,7 @@ public class MwsRestApiMain {
 
         int port = RuntimeConfiguration.getPort();
         String host = RuntimeConfiguration.getHost();
-        serv.requestHandler(mainRouter::accept)
+        serv.requestHandler(PluginShared.getMainRouter()::accept)
                 .listen(port, host);
 
         logger.info("Listening at http" +
@@ -74,30 +93,5 @@ public class MwsRestApiMain {
         );
 
 
-//        if(true) return;
-//        String theString = convertStreamToString(
-//                ClassLoader.getSystemResourceAsStream("mock/UpdateReportAcknowledgementsResponse.xml"));
-//
-//
-//
-//        ObjectMapper xmlMapper = new XmlMapper();
-//        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
-//        // if ONLY using JAXB annotations:
-//        xmlMapper.setAnnotationIntrospector(introspector);
-//
-//        long startTime = System.currentTimeMillis();
-//        UpdateReportAcknowledgementsResponse r = null;
-//        try {
-//            r = xmlMapper.readValue(theString, UpdateReportAcknowledgementsResponse.class);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        long stopTime = System.currentTimeMillis();
-//        long elapsedTime = stopTime - startTime;
-//        System.out.println(elapsedTime);
-//
-//        //GetCompetitivePricingForASINResponse r  =Json.decodeValue(theString, GetCompetitivePricingForASINResponse.class);
-//        System.out.println(r);
     }
 }

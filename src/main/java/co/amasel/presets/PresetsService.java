@@ -1,5 +1,6 @@
 package co.amasel.presets;
 
+import co.amasel.server.PluginShared;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.EventBus;
@@ -20,10 +21,7 @@ import java.util.Set;
 public class PresetsService extends AbstractVerticle {
     private final Logger logger = LoggerFactory.getLogger("PresetService");
 
-    Router mainRouter ;
-
-    public PresetsService(Router mainRouter) {
-        this.mainRouter = mainRouter;
+    public PresetsService() {
     }
 
     @Override
@@ -79,7 +77,7 @@ public class PresetsService extends AbstractVerticle {
         });
 
 
-        mainRouter.mountSubRouter("/presets", restAPI);
+        PluginShared.getMainRouter().mountSubRouter("/presets", restAPI);
 
         logger.info("Start /presets/* service");
 
