@@ -6,6 +6,7 @@ version '1.0-SNAPSHOT'
 
 
 apply plugin: 'application'
+apply plugin: 'idea'
 
 ext {
     vertxVersion = '3.2.1'
@@ -44,6 +45,7 @@ dependencies {
     compile name: "MWSProducts_2011-10-01_v2015-09-01"
     compile name: "MWSOrders_2013-09-01_v2015-09-24"
     compile name: "MaWSJavaClientLibrary-1.1"
+    testCompile 'org.xmlunit:xmlunit-matchers:2.1.1'
 }
 
 mainClassName = 'MwsRestApiMain'
@@ -55,5 +57,12 @@ startScripts {
     doLast {
         unixScript.text = unixScript.text.replace('MWS_REST_API_HOME', '\$APP_HOME')
         windowsScript.text = windowsScript.text.replace('MWS_REST_API_HOME', '%~dp0..')
+    }
+}
+
+idea{
+    module {
+        downloadJavadoc = true // defaults to false
+        downloadSources = true
     }
 }

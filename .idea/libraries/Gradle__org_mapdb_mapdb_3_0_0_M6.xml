@@ -3,7 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapdb/mapdb/3.0.0-M6/7628c3c403edd7518342296ebb226d80dfe98701/mapdb-3.0.0-M6.jar!/" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapdb/mapdb/3.0.0-M6/fbe16f050623ca034b2005c74e761936abd2aa58/mapdb-3.0.0-M6-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapdb/mapdb/3.0.0-M6/1c37b62bc5ca5350a0eebbafcf69adc28b967d77/mapdb-3.0.0-M6-sources.jar!/" />
     </SOURCES>

@@ -51,8 +51,6 @@ public class MwsRestApiMain {
         vertx.deployVerticle(myAVerticle, deploymentOptions);
         vertx.deployVerticle(new PresetsService(), deploymentOptions);
 
-        deploymentOptions.setExtraClasspath(Arrays.asList("co.amasel.*"));
-
         File pluginsDir = new File(RuntimeConfiguration.getAppDir(), "plugins");
         logger.info("Loading plugins in: " + pluginsDir.getPath());
         for(File file : pluginsDir.listFiles()){
@@ -61,8 +59,6 @@ public class MwsRestApiMain {
                 vertx.deployVerticle(file.getAbsolutePath(), deploymentOptions);
             }
         }
-
-
 
         logger.debug("Config:" + RuntimeConfiguration.loadConfig().encodePrettily());
 

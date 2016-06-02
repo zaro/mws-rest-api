@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 /**
@@ -114,13 +115,18 @@ public class MwsAsyncHandler extends AbstractVerticle{
                             .putHeader("Content-Type","text/xml")
                             .end(response.response.toXML());
                 } else {
-                    HttpServerResponse r = routingContext.response()
-                            .putHeader("Content-Type", params.raw ? response.contentType : "application/json");
+                    HttpServerResponse r = routingContext.response();
+                    if(!params.raw) {
+                       r.putHeader("Content-Type", "application/json");
+                    }
 
                     JsonObject outObj = new JsonObject();
                     try {
                         String resultKey = response.result instanceof MwsException.XmlMwsException ? "error" : "result";
                         if (params.raw) {
+                            for(Map.Entry<String, String> it: response.headers){
+                                r.putHeader(it.getKey(), it.getValue());
+                            }
                             r.end(response.rawResponse);
                             return;
                         } else if (params.full) {

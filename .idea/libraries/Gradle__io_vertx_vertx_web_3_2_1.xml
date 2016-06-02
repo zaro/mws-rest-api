@@ -3,7 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.vertx/vertx-web/3.2.1/b88cfca469cf8f0a113bb43bf22264211a6224c8/vertx-web-3.2.1.jar!/" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.vertx/vertx-web/3.2.1/111b047fd6b9d615ad5c523da5e5fcc20c10fdaf/vertx-web-3.2.1-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.vertx/vertx-web/3.2.1/72ad3528844c85062820eaf934780ecae2e4812e/vertx-web-3.2.1-sources.jar!/" />
     </SOURCES>

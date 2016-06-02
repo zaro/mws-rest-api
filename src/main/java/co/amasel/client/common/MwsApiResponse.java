@@ -7,6 +7,7 @@ import co.amasel.misc.RuntimeConfiguration;
 import co.amasel.model.common.AmaselMwsObject;
 import com.amazonservices.mws.client.MwsObject;
 import com.amazonservices.mws.client.MwsResponseHeaderMetadata;
+import io.vertx.core.MultiMap;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -37,6 +38,7 @@ public class MwsApiResponse {
     public final boolean isXml;
     public final String contentType;
     public final String encoding;
+    public final MultiMap headers;
 
     public JsonObject xmlReport;
     public JsonArray  tabReport;
@@ -52,19 +54,21 @@ public class MwsApiResponse {
         this.isReport = false;
         this.rawResponse = null;
         this.contentType = null;
+        this.headers = null;
         this.isXml = false;
         this.encoding = "utf-8";
     }
 
     static Pattern charset = Pattern.compile("charset=(\\S+)");
-    public MwsApiResponse(MwsResponseHeaderMetadata meta, AmaselMwsObject response, MwsObject result, List<MwsObject> resultList, boolean isReport, Buffer rawResponse, String contentType) {
+    public MwsApiResponse(MwsResponseHeaderMetadata meta, AmaselMwsObject response, MwsObject result, List<MwsObject> resultList, boolean isReport, Buffer rawResponse, MultiMap headers) {
         this.meta = meta;
         this.response = response;
         this.result = result;
         this.resultList = resultList;
         this.isReport =isReport;
         this.rawResponse = rawResponse;
-        this.contentType = contentType;
+        this.headers = headers;
+        this.contentType = headers.get("Content-Type");
         Matcher m = charset.matcher(contentType);
         if( m.find() ) {
             this.encoding = m.group(1);
@@ -84,8 +88,8 @@ public class MwsApiResponse {
         isXml = isXml1;
     }
 
-    public MwsApiResponse(MwsResponseHeaderMetadata meta, boolean isReport, Buffer rawResponse, String contentType) {
-        this(meta, null, null, null, isReport, rawResponse, contentType);
+    public MwsApiResponse(MwsResponseHeaderMetadata meta, boolean isReport, Buffer rawResponse, MultiMap headers) {
+        this(meta, null, null, null, isReport, rawResponse, headers);
     }
 
     public boolean isArray(){

@@ -3,7 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-test/1.0.1/d76efabcdde0a16d82f7f74b1b11ba56240a9ded/kotlin-test-1.0.1.jar!/" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-test/1.0.1/2118b7f614e1573ff940bf1319a7a72a731d9ff1/kotlin-test-1.0.1-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-test/1.0.1/fffb822fdce38c2e84d5e5263605f8f13aab546e/kotlin-test-1.0.1-sources.jar!/" />
     </SOURCES>

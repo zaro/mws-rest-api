@@ -3,7 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapdb/elsa/3.0.0-M2/f4c3ae1b7eedc1556062e27a00be2ed2e0b71260/elsa-3.0.0-M2.jar!/" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapdb/elsa/3.0.0-M2/770a465ced587e6c8545ed25000ec3ddbedb0a6c/elsa-3.0.0-M2-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapdb/elsa/3.0.0-M2/b5155714d3a4ac0a03b6c77fa53fa60721bac518/elsa-3.0.0-M2-sources.jar!/" />
     </SOURCES>

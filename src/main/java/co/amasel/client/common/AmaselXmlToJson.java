@@ -1,5 +1,6 @@
 package co.amasel.client.common;
 
+import co.amasel.misc.RuntimeConfiguration;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.w3c.dom.Document;
@@ -22,7 +23,9 @@ import java.util.*;
  * Created by zaro on 5/30/16.
  */
 public class AmaselXmlToJson {
-    static class JsonPoint {
+    boolean convertNumbers;
+
+    class JsonPoint {
         String name;
         JsonObject o;
         Object v;
@@ -68,7 +71,22 @@ public class AmaselXmlToJson {
         }
 
         public Object asObject() {
-            return  o != null ? o : v;
+            if( o != null ) {
+                return  o;
+            }
+            if(convertNumbers && v instanceof String){
+                if(RuntimeConfiguration.isNumber.matcher((String)v).find()) {
+                    Double f = Double.valueOf((String)v);
+                    return f;
+                }
+            }
+            return v;
+        }
+
+        public JsonObject asJsonObject() {
+            JsonObject r = new JsonObject();
+            r.put( name, o != null ? o : v);
+            return r;
         }
 
         public String toString() {
@@ -127,30 +145,25 @@ public class AmaselXmlToJson {
         //}
     }
 
-    public static JsonObject convert(String xmlString) throws ParserConfigurationException, IOException, SAXException {
+    public static JsonObject convert(String xmlString, boolean convertNumbers) throws ParserConfigurationException, IOException, SAXException {
 
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
                 .newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xmlString));
         Document document = docBuilder.parse(is);
-        JsonPoint json = traverse(document.getDocumentElement(), null);
+        AmaselXmlToJson c = new AmaselXmlToJson();
+        c.convertNumbers = convertNumbers;
+        JsonPoint json = c.traverse(document.getDocumentElement(), null);
 
-        return json.o;
+        return json.asJsonObject();
     }
 
-    public static JsonObject convert(File file) throws ParserConfigurationException, IOException, SAXException {
-
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
-                .newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(file);
-        JsonPoint json = traverse(document.getDocumentElement(), null);
-
-        return json.o;
+    public static JsonObject convert(String xmlString) throws ParserConfigurationException, IOException, SAXException {
+        return convert(xmlString, false);
     }
 
-    public static JsonPoint traverse(Node node, NodeDescription nType) {
+    public JsonPoint traverse(Node node, NodeDescription nType) {
         // do something with the current node instead of System.out
         NodeDescription nodeDescription = (nType != null) ? nType : new NodeDescription(node, null);
 
@@ -173,12 +186,6 @@ public class AmaselXmlToJson {
             json.put( childJson );
         }
         return json;
-    }
-
-    public static void main(String[] args) throws SAXException, IOException,
-            ParserConfigurationException, TransformerException {
-        JsonObject o = AmaselXmlToJson.convert(new File("document.xml"));
-        System.out.println(o.encodePrettily());
     }
 
 

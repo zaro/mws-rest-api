@@ -3,7 +3,9 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.collections/eclipse-collections-api/7.0.1/f7e1ed53aeddfb05619f637aa2f1272c6a710e20/eclipse-collections-api-7.0.1.jar!/" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.collections/eclipse-collections-api/7.0.1/d28b0dd8389c8fed015b7731eec278808cc2c499/eclipse-collections-api-7.0.1-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.collections/eclipse-collections-api/7.0.1/659da4d057dab9fad430f2b15b19bb49ab4518d8/eclipse-collections-api-7.0.1-sources.jar!/" />
     </SOURCES>
