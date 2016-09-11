@@ -168,8 +168,8 @@ public class MwsMethodMap {
         }
 
         //@Override
-        public MwsException wrapException(Throwable cause) {
-            return new MwsException(cause);
+        public AmaselMwsException wrapException(Throwable cause) {
+            return new AmaselMwsException(cause);
         }
 
         //@Override

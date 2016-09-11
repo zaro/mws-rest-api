@@ -132,7 +132,7 @@ public class MwsException extends RuntimeException {
     }
 
     /**
-     * Initializes MwsException with information available from service.
+     * Initializes AmaselMwsException with information available from service.
      * 
      * @param statusCode
      *            HTTP status code for error response.
@@ -177,7 +177,7 @@ public class MwsException extends RuntimeException {
     /**
      * Initialize and set cause from another exception.
      * <p>
-     * If cause is an MwsException copies that exception's attributes to this
+     * If cause is an AmaselMwsException copies that exception's attributes to this
      * one, ignoring the statusCode and message parameters that were passed in.
      * <p>
      * 
@@ -203,7 +203,7 @@ public class MwsException extends RuntimeException {
     }
 
     /**
-     * Create wrap around another MwsException.
+     * Create wrap around another AmaselMwsException.
      * 
      * @param cause Exception to wrap
      */

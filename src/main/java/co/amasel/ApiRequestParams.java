@@ -9,34 +9,38 @@ import java.util.List;
  * Created by zaro on 11/21/15.
  */
 public class ApiRequestParams {
+    final JsonObject postedParams;
+    final MultiMap queryParams;
+
     public boolean xml ;
     public boolean full;
     public boolean raw;
     public boolean meta;
     public boolean pretty;
     public boolean numbers;
+    public boolean asDict;
     public String preset;
     public String awsAccessKey;
     public String awsSecretKey;
     public String endPoint;
     public String userAgent;
 
-    public static boolean getJsonBoolean(JsonObject params, String key, boolean defaultValue) throws ApiRequestException {
-        if(params == null || !params.containsKey(key)){
+    public boolean getJsonBoolean(String key, boolean defaultValue) throws ApiRequestException {
+        if(postedParams == null || !postedParams.containsKey(key)){
             return defaultValue;
         }
         try {
-            return params.getBoolean(key);
+            return postedParams.getBoolean(key);
         } catch( java.lang.ClassCastException e) {
-            throw  new ApiRequestException("Invalid value for parameter '"+key+"' : "+ params.getValue(key).toString() );
+            throw  new ApiRequestException("Invalid value for parameter '"+key+"' : "+ postedParams.getValue(key).toString() );
         }
     }
 
-    public static boolean getQueryBoolean(MultiMap params, String key, boolean defaultValue) throws ApiRequestException{
-        if(params == null || !params.contains(key)){
+    public boolean getQueryBoolean(String key, boolean defaultValue) throws ApiRequestException{
+        if(queryParams == null || !queryParams.contains(key)){
             return defaultValue;
         }
-        List<String> values  = params.getAll(key);
+        List<String> values  = queryParams.getAll(key);
         String value = values.get(values.size()-1);
         if(value.equals("true")) {
             return true;
@@ -47,46 +51,57 @@ public class ApiRequestParams {
         }
     }
 
-    public static String getJsonString(JsonObject params, String key, String defaultValue) throws ApiRequestException{
-        if(params == null || !params.containsKey(key)){
+    public String getJsonString(String key, String defaultValue) throws ApiRequestException{
+        if(postedParams == null || !postedParams.containsKey(key)){
             return defaultValue;
         }
         try {
-            return params.getString(key);
+            return postedParams.getString(key);
         } catch( java.lang.ClassCastException e) {
-            throw  new ApiRequestException("Invalid value for parameter '"+key+"' : "+ params.getValue(key).toString() );
+            throw  new ApiRequestException("Invalid value for parameter '"+key+"' : "+ postedParams.getValue(key).toString() );
         }
     }
 
-    public static String getQueryString(MultiMap params, String key, String defaultValue) throws ApiRequestException{
-        if(params == null || !params.contains(key)){
+    public String getQueryString(String key, String defaultValue) throws ApiRequestException{
+        if(queryParams == null || !queryParams.contains(key)){
             return defaultValue;
         }
-        List<String> values  = params.getAll(key);
+        List<String> values  = queryParams.getAll(key);
+        return values.get(values.size()-1);
+    }
+
+    public static String getQueryString(MultiMap queryParams, String key, String defaultValue) throws ApiRequestException{
+        if(queryParams == null || !queryParams.contains(key)){
+            return defaultValue;
+        }
+        List<String> values  = queryParams.getAll(key);
         return values.get(values.size()-1);
     }
 
 
-    public static boolean getBoolean(JsonObject params, MultiMap query, String key, boolean defaultValue) throws ApiRequestException {
-        return getQueryBoolean(query, key, getJsonBoolean(params, "_" + key, defaultValue));
+    public boolean getBoolean(String key, boolean defaultValue) throws ApiRequestException {
+        return getQueryBoolean(key, getJsonBoolean("_" + key, defaultValue));
     }
 
-    public static String getString(JsonObject params, MultiMap query, String key, String defaultValue) throws ApiRequestException {
-        return getQueryString(query, key, getJsonString(params, "_" + key, defaultValue));
+    public String getString(String key, String defaultValue) throws ApiRequestException {
+        return getQueryString(key, getJsonString("_" + key, defaultValue));
     }
 
     public ApiRequestParams(MultiMap query, JsonObject params)  throws ApiRequestException {
-        xml = getBoolean(params, query,  "xml", false);
-        full = getBoolean(params, query,  "full", false);
-        raw = getBoolean(params, query,  "raw", false);
-        meta = getBoolean(params, query,  "meta", false);
-        pretty = getBoolean(params, query,  "pretty", false);
-        numbers = getBoolean(params, query,  "numbers", true);
-        preset = getString(params, query, "preset", "default");
-        awsAccessKey = getString(params, query, "awsAccessKey", null);
-        awsSecretKey = getString(params, query, "awsSecretKey", null);
-        endPoint = getString(params, query, "endPoint", "uk");
-        userAgent = getString(params, query, "userAgent", null);
+        queryParams = query;
+        postedParams = params;
+        xml = getBoolean("xml", false);
+        full = getBoolean("full", false);
+        raw = getBoolean("raw", false);
+        meta = getBoolean("meta", false);
+        pretty = getBoolean("pretty", false);
+        numbers = getBoolean("numbers", true);
+        asDict = getBoolean("asDict", true);
+        preset = getString("preset", "default");
+        awsAccessKey = getString("awsAccessKey", null);
+        awsSecretKey = getString("awsSecretKey", null);
+        endPoint = getString("endPoint", "uk");
+        userAgent = getString("userAgent", null);
     }
 
 }

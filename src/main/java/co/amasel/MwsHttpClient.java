@@ -193,7 +193,7 @@ public class MwsHttpClient {
 //                    result.complete(new Response(meta, responseObject, mwsResult, mwsResultList));
 //                } else if( response.statusCode() >=400 ){
 //                    System.out.println("WTF >=400");
-//                    MwsException.XmlMwsException parsed = reader.read("Error", MwsException.XmlMwsException.class);
+//                    AmaselMwsException.XmlMwsException parsed = reader.read("Error", AmaselMwsException.XmlMwsException.class);
 //                    result.complete(new Response(meta, responseObject, parsed, null));
 //                } else {
 //                    System.out.println("WTF");

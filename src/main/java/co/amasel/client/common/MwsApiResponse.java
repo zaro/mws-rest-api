@@ -15,11 +15,14 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.xml.sax.SAXException;
+import rx.Observable;
+import rx.Single;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,8 +34,8 @@ public class MwsApiResponse {
 
     public MwsResponseHeaderMetadata meta;
     public AmaselMwsObject response;
-    public final MwsObject result;
-    public final List<MwsObject> resultList;
+    public final AmaselMwsObject result;
+    public final List<AmaselMwsObject> resultList;
     public final boolean isReport;
     public final Buffer rawResponse;
     public final boolean isXml;
@@ -60,7 +63,7 @@ public class MwsApiResponse {
     }
 
     static Pattern charset = Pattern.compile("charset=(\\S+)");
-    public MwsApiResponse(MwsResponseHeaderMetadata meta, AmaselMwsObject response, MwsObject result, List<MwsObject> resultList, boolean isReport, Buffer rawResponse, MultiMap headers) {
+    public MwsApiResponse(MwsResponseHeaderMetadata meta, AmaselMwsObject response, AmaselMwsObject result, List<AmaselMwsObject> resultList, boolean isReport, Buffer rawResponse, MultiMap headers) {
         this.meta = meta;
         this.response = response;
         this.result = result;
@@ -90,6 +93,10 @@ public class MwsApiResponse {
 
     public MwsApiResponse(MwsResponseHeaderMetadata meta, boolean isReport, Buffer rawResponse, MultiMap headers) {
         this(meta, null, null, null, isReport, rawResponse, headers);
+    }
+
+    public boolean isError(){
+        return error != null;
     }
 
     public boolean isArray(){
@@ -143,25 +150,39 @@ public class MwsApiResponse {
         CSVParser parser = null;
         try {
             String bodyAsString = rawResponse.toString(encoding);
-            parser = CSVParser.parse(bodyAsString, CSVFormat.TDF);
+            // Don't use quote characters
+            CSVFormat csvFormat = CSVFormat.TDF.withQuote((char) 255);
+            if(params.asDict){
+                csvFormat = csvFormat.withFirstRecordAsHeader();
+            }
+            parser = CSVParser.parse(bodyAsString, csvFormat);
         } catch (IOException e) {
             e.printStackTrace();
         }
         for (CSVRecord line : parser) {
-            JsonArray row = new JsonArray();
-            for(int i=0; i < line.size(); ++i){
-                String column = line.get(i);
-                if(toNumbers){
-                    if(RuntimeConfiguration.isNumber.matcher(column).find()){
+            if(params.asDict){
+                JsonObject row = new JsonObject();
+                for(Map.Entry<String, String> it: line.toMap().entrySet() ){
+                    if (toNumbers && RuntimeConfiguration.isNumber.matcher(it.getValue()).find()) {
+                        row.put(it.getKey(), Double.valueOf(it.getValue()));
+                    } else {
+                        row.put(it.getKey(), it.getValue());
+                    }
+
+                }
+                tabReport.add(row);
+            }else {
+                JsonArray row = new JsonArray();
+                for (int i = 0; i < line.size(); ++i) {
+                    String column = line.get(i);
+                    if (toNumbers && RuntimeConfiguration.isNumber.matcher(column).find()) {
                         row.add(Float.valueOf(column));
                     } else {
                         row.add(column);
                     }
-                } else {
-                    row.add(column);
                 }
+                tabReport.add(row);
             }
-            tabReport.add(row);
         }
 
         return tabReport;
@@ -173,4 +194,5 @@ public class MwsApiResponse {
         }
         return asJsonObject(params);
     }
+
 }

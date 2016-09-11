@@ -55,7 +55,9 @@ public class AmaselJsonToXml {
             Object value = it.getValue();
             if(key.startsWith("~")){
                 node.setAttribute(key.substring(1), value.toString());
-            }else if(value instanceof JsonObject){
+            }else if(key.equals("@")){
+                node.setTextContent(value.toString());
+            } else if(value instanceof JsonObject){
                 Node child = traverse((JsonObject) value, key);
                 node.appendChild(child);
             }else if(value instanceof JsonArray){

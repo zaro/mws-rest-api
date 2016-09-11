@@ -130,6 +130,9 @@ public class AmaselXmlToJson {
                 if( nodeType != Node.TEXT_NODE && nodeType != Node.COMMENT_NODE ){
                     isText = false;
                 }
+                if( nodeType == Node.ATTRIBUTE_NODE ){
+                    System.out.println(node.getNodeName() + ":"+ node.getNodeValue());
+                }
             }
             this.isText = isText;
             //arrays = new HashSet<>();
@@ -167,17 +170,20 @@ public class AmaselXmlToJson {
         // do something with the current node instead of System.out
         NodeDescription nodeDescription = (nType != null) ? nType : new NodeDescription(node, null);
 
-        if( nodeDescription.isText ){
-            return new JsonPoint(nodeDescription.name,node.getTextContent());
+        if( nodeDescription.isText){
+            if( node.hasAttributes() ){
+                JsonPoint json = new JsonPoint(nodeDescription.name);
+                addAttributes(node, json);
+                json.put( new JsonPoint("@", node.getTextContent() ));
+                return json;
+            } else {
+                return new JsonPoint(nodeDescription.name, node.getTextContent());
+            }
         }
 
         JsonPoint json = new JsonPoint(nodeDescription.name);
 
-        NamedNodeMap attributes = node.getAttributes();
-        for(int i = 0; i < attributes.getLength(); ++i){
-            Node attribute = attributes.item(i);
-            json.put( new JsonPoint("~"  + attribute.getNodeName(), attribute.getNodeValue()) );
-        }
+        addAttributes(node, json);
 
         for(Node currentNode : nodeDescription.children){
             //calls this method for all the children which is Element
@@ -186,6 +192,14 @@ public class AmaselXmlToJson {
             json.put( childJson );
         }
         return json;
+    }
+
+    private void addAttributes(Node node, JsonPoint json) {
+        NamedNodeMap attributes = node.getAttributes();
+        for(int i = 0; i < attributes.getLength(); ++i){
+            Node attribute = attributes.item(i);
+            json.put( new JsonPoint("~"  + attribute.getNodeName(), attribute.getNodeValue()) );
+        }
     }
 
 

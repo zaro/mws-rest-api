@@ -22,6 +22,7 @@ repositories {
                 "$projectDir/mws-lib/MWSOrdersJavaClientLibrary/dist",
                 "$projectDir/mws-lib/MWSProductsJavaClientLibrary/dist",
                 "$projectDir/mws-lib/amazon-mws-feeds/dist",
+                "$projectDir/mws-lib/MWSSellersJavaClientLibrary-2011-07-01._V325005493_/dist"
         ]
     }
 }
@@ -31,6 +32,8 @@ dependencies {
     compile "io.vertx:vertx-lang-groovy:$vertxVersion"
     compile "io.vertx:vertx-lang-js:$vertxVersion"
     compile "io.vertx:vertx-web:$vertxVersion"
+    compile "io.vertx:vertx-jdbc-client:$vertxVersion"
+    compile "io.vertx:vertx-rx-java:$vertxVersion"
     compile "io.vertx:vertx-unit:$vertxVersion"
     compile "org.apache.httpcomponents:httpclient:4.2.3"
 //    compile "org.codehaus.woodstox:woodstox-core-asl:4.4.1"
@@ -39,12 +42,18 @@ dependencies {
 //    compile 'org.jodd:jodd-bean:3.6.7'
     compile 'org.apache.commons:commons-csv:1.3'
     compile 'commons-io:commons-io:2.5'
+    compile 'org.apache.commons:commons-lang3:3.4'
     // http://mvnrepository.com/artifact/org.mapdb/mapdb
     compile group: 'org.mapdb', name: 'mapdb', version: '3.0.0-M6'
+    // https://mvnrepository.com/artifact/com.h2database/h2
+    compile group: 'com.h2database', name: 'h2', version: '1.4.192'
+    compile 'org.elasticsearch.distribution.test:elasticsearch:2.3.3'
     compile name: "MWSClientJavaRuntime-1.0"
     compile name: "MWSProducts_2011-10-01_v2015-09-01"
     compile name: "MWSOrders_2013-09-01_v2015-09-24"
+    compile name: "MWSSellers_2011-07-01_v2014-09-30"
     compile name: "MaWSJavaClientLibrary-1.1"
+    compile 'org.jboss.forge.roaster:roaster-distribution:2.19.0.Final'
     testCompile 'org.xmlunit:xmlunit-matchers:2.1.1'
 }
 

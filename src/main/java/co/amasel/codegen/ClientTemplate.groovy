@@ -18,6 +18,7 @@ import co.amasel.ApiRequestException;
 import co.amasel.client.common.AmaselClient;
 import co.amasel.client.common.AmaselClient;
 import co.amasel.client.common.AmazonCredentials;
+import co.amasel.client.common.MwsApiResponse;
 import <%= packageName %>.MethodMap;
 import <%= modelPackage %>;
 
@@ -26,12 +27,12 @@ import <%= modelPackage %>;
 public class <%= className %> extends AmaselClient {
     String endPoint;
     AmazonCredentials credentials;
-    public <%= className %>(Vertx vertx, String endPoint, AmazonCredentials credentials) {
-        super(vertx);
-        this.endPoint = endPoint;
-        this.credentials = credentials;
+    public static AmaselClient fromVertxInstance(Vertx vertx) {
+        AmaselClient c = new AmaselClient();
+        c.vertx = vertx;
+        return  c;
     }
-    public Future<Response> invoke(<%= className %>Request request) throws ApiRequestException {
+    public Future<MwsApiResponse> invoke(<%= className %>Request request) throws ApiRequestException {
         return invoke(MethodMap.<%= className %>, request, endPoint, credentials);
     }
 }

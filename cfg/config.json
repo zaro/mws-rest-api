@@ -4,8 +4,8 @@
 # to get plain json
 {
   "ssl" : {
-    "keyPath"  : "certbot/live/foggly-backup.ftp.sh/privkey.pem",
-    "certPath" : "certbot/live/foggly-backup.ftp.sh/fullchain.pem"
+#    "keyPath"  : "certbot/live/foggly-backup.ftp.sh/privkey.pem",
+#    "certPath" : "certbot/live/foggly-backup.ftp.sh/fullchain.pem"
   },
   "port" : 8181
 }

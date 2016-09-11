@@ -2,11 +2,11 @@ package co.amasel.client.common;
 
 import co.amasel.*;
 import co.amasel.misc.BeanAccess;
+import co.amasel.model.common.AmaselMwsException;
 import co.amasel.model.common.AmaselMwsObject;
 import com.amazonservices.mws.client.MwsObject;
 import com.amazonservices.mws.client.MwsResponseHeaderMetadata;
 import com.amazonservices.mws.client.MwsXmlReader;
-import com.fasterxml.jackson.databind.deser.Deserializers;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
@@ -14,7 +14,8 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
-import org.jetbrains.annotations.NotNull;
+import io.vertx.core.json.JsonObject;
+import io.vertx.rx.java.RxHelper;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -35,13 +36,15 @@ import java.util.*;
  * Created by zaro on 5/20/16.
  */
 public class AmaselClient extends AmaselClientBase {
-    Vertx vertx;
+    public Vertx vertx;
 
-    public AmaselClient(Vertx vertx) {
-        this.vertx = vertx;
+    public static AmaselClient fromVertxInstance(Vertx vertx) {
+        AmaselClient c = new AmaselClient();
+        c.vertx = vertx;
+        return  c;
     }
 
-    class AmaselClientRequest {
+    protected class AmaselClientRequest {
         public final MwsApiCall apiCallDescription;
         public final MwsObject requestObject;
         public final Future<MwsApiResponse> result;
@@ -84,8 +87,7 @@ public class AmaselClient extends AmaselClientBase {
 
             HttpClientRequest request = client.postAbs(uri, getResponseHandler());
             request.exceptionHandler( exception ->{
-                logger.error(exception);
-                result.fail(exception);
+                failRequest(exception);
             });
             request.putHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
             request.putHeader("X-Amazon-User-Agent", getUserAgent());
@@ -101,7 +103,16 @@ public class AmaselClient extends AmaselClientBase {
             }
         }
 
-        public boolean retryRequest(MwsException.XmlMwsException xmlException){
+        protected void completeRequest(MwsApiResponse apiResponse){
+            result.complete(apiResponse);
+        }
+
+        protected void failRequest(Throwable exception){
+            logger.error(exception);
+            result.fail(exception);
+        }
+
+        public boolean retryRequest(AmaselMwsException.XmlMwsException xmlException){
             if(numberOfRetries == 0){
                 return false;
             }
@@ -126,13 +137,14 @@ public class AmaselClient extends AmaselClientBase {
             return true;
         }
 
-        class HttpResponseHandler implements Handler<HttpClientResponse> {
+        protected class HttpResponseHandler implements Handler<HttpClientResponse> {
             HttpClientResponse response = null;
             Handler<Buffer> handler = null;
             long startTime;
 
             Handler<Buffer> getBodyHandler() {
                 startTime = System.currentTimeMillis();
+                //response.bodyHandler();
                 if (handler == null) {
                     if (apiCallDescription.getOperationName().equals("GetReport")) {
                         handler = new GertReportHandler();
@@ -153,8 +165,7 @@ public class AmaselClient extends AmaselClientBase {
                 //System.out.println("> " + response.statusCode() + " " + response.statusMessage());
                 response.bodyHandler(getBodyHandler());
                 response.exceptionHandler(exception -> {
-                    logger.error(exception);
-                    result.fail(exception);
+                    failRequest(exception);
                 });
 
             }
@@ -169,30 +180,30 @@ public class AmaselClient extends AmaselClientBase {
                     MwsXmlReader reader = new MwsXmlReader(totalBuffer.toString());
                     if (response.statusCode() == 200) {
                         responseObject.readFragmentFrom(reader);
-                        MwsObject mwsResult = null;
-                        List<MwsObject> mwsResultList = null;
+                        AmaselMwsObject mwsResult = null;
+                        List<AmaselMwsObject> mwsResultList = null;
                         Object o = BeanAccess.getProperty(responseObject, apiCallDescription.getOperationName() + "Result");
                         if (o instanceof List) {
-                            mwsResultList = (List<MwsObject>) o;
+                            mwsResultList = (List<AmaselMwsObject>) o;
                         } else {
-                            mwsResult = (MwsObject) o;
+                            mwsResult = (AmaselMwsObject) o;
                         }
                         logger.info("COMPLETE");
-                        result.complete(new MwsApiResponse(meta, responseObject, mwsResult, mwsResultList, false, totalBuffer, response.headers()));
+                        completeRequest(new MwsApiResponse(meta, responseObject, mwsResult, mwsResultList, false, totalBuffer, response.headers()));
                     } else if (response.statusCode() >= 400) {
                         System.out.println("WTF >=400");
-                        MwsException.XmlMwsException parsed = reader.read("Error", MwsException.XmlMwsException.class);
+                        AmaselMwsException.XmlMwsException parsed = reader.read("Error", AmaselMwsException.XmlMwsException.class);
                         if(!retryRequest(parsed)) {
-                            result.complete(new MwsApiResponse(meta, responseObject, parsed, null, false, totalBuffer, response.headers()));
+                            completeRequest(new MwsApiResponse(meta, responseObject, parsed, null, false, totalBuffer, response.headers()));
                         }
                     } else {
                         System.out.println("WTF");
-                        result.complete(new MwsApiResponse(meta, "Unknown response from Amazon MWS:" + response.statusCode() + " " + response.statusMessage()));
+                        completeRequest(new MwsApiResponse(meta, "Unknown response from Amazon MWS:" + response.statusCode() + " " + response.statusMessage()));
                     }
                 }
             }
 
-            class GertReportHandler implements Handler<Buffer> {
+            protected class GertReportHandler implements Handler<Buffer> {
 
                 @Override
                 public void handle(Buffer totalBuffer) {
@@ -212,34 +223,46 @@ public class AmaselClient extends AmaselClientBase {
                         }
                         if (!md5Hash.equals(amazonMd5)) {
                             String error = "Invalid MD5 on received content: amazon=" + amazonMd5 + " , calculated=" + md5Hash;
-                            result.complete(new MwsApiResponse(meta, error));
+                            completeRequest(new MwsApiResponse(meta, error));
+                        } else {
+                            completeRequest(new MwsApiResponse(meta, true, totalBuffer, response.headers()));
                         }
-                        result.complete(new MwsApiResponse(meta, true, totalBuffer, response.headers()));
                     } else if (response.statusCode() >= 400) {
                         System.out.println("WTF >=400");
                         AmaselMwsObject responseObject = MwsUtl.newInstance(apiCallDescription.getResponseClass());
                         responseObject.setMwsHeaderMetadata(meta);
                         MwsXmlReader reader = new MwsXmlReader(totalBuffer.toString());
-                        MwsException.XmlMwsException parsed = reader.read("Error", MwsException.XmlMwsException.class);
+                        AmaselMwsException.XmlMwsException parsed = reader.read("Error", AmaselMwsException.XmlMwsException.class);
                         if(!retryRequest(parsed)) {
-                            result.complete(new MwsApiResponse(meta, responseObject, parsed, null, true, totalBuffer, response.headers()));
+                            completeRequest(new MwsApiResponse(meta, responseObject, parsed, null, true, totalBuffer, response.headers()));
                         }
                     } else {
                         System.out.println("WTF");
-                        result.complete(new MwsApiResponse(meta, "Unknown response from Amazon MWS:" + response.statusCode() + " " + response.statusMessage()));
+                        completeRequest(new MwsApiResponse(meta, "Unknown response from Amazon MWS:" + response.statusCode() + " " + response.statusMessage()));
                     }
                 }
             }
         }
     }
 
-    @Override
-    public Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, MwsObject requestObject, String endPoint, AmazonCredentials credentials) throws ApiRequestException {
+    public Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, AmaselMwsObject requestObject, String endPoint, AmazonCredentials credentials) throws ApiRequestException {
         final Future<MwsApiResponse> result = Future.future();
         if(apiCallDescription == null){
             throw new ApiRequestException("Invalid method description: null");
         }
         new AmaselClientRequest(apiCallDescription, requestObject,result, endPoint,credentials, 3).makeRequest();
+        return result;
+    }
+
+    public Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, JsonObject requestObject, String endPoint, AmazonCredentials credentials) throws ApiRequestException {
+        final Future<MwsApiResponse> result = Future.future();
+        if(apiCallDescription == null){
+            throw new ApiRequestException("Invalid method description: null");
+        }
+        // Create a request.
+        MwsObject request = createRequestFromJson(apiCallDescription, requestObject);
+
+        new AmaselClientRequest(apiCallDescription, request,result, endPoint,credentials, 3).makeRequest();
         return result;
     }
 

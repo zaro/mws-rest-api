@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: io.vertx:vertx-jdbc-client:3.2.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.vertx/vertx-jdbc-client/3.2.1/b8468168a8066013613ff61aadfbe0ac0d555cf0/vertx-jdbc-client-3.2.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.vertx/vertx-jdbc-client/3.2.1/d28d2c9d9729c6ba9439d821b74aa263829b7d44/vertx-jdbc-client-3.2.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.vertx/vertx-jdbc-client/3.2.1/244f53a2b72cf40f91e91c0862bd2c96813d3127/vertx-jdbc-client-3.2.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

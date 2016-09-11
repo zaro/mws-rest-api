@@ -69,6 +69,11 @@ class Codegen {
                                     model: "com.amazonservices.mws.orders._2013_09_01.model",
                                     outputModel:  "orders",
                                     configClass: "com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersConfig"
+                            ],
+                            "MWSSellers": [
+                                    model:"com.amazonservices.mws.sellers.model",
+                                    outputModel:  "sellers",
+                                    configClass: "com.amazonservices.mws.sellers.MarketplaceWebServiceSellersConfig",
                             ]
         ]
         for(url in  ClassEnumerator.getClassPath()){

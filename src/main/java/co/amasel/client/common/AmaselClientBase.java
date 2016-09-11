@@ -3,6 +3,7 @@ package co.amasel.client.common;
 import co.amasel.ApiRequestException;
 import co.amasel.MwsJsonObjectReader;
 import co.amasel.MwsObjectToPostParams;
+import co.amasel.model.common.AmaselMwsObject;
 import com.amazonservices.mws.client.MwsObject;
 import com.amazonservices.mws.client.MwsResponseHeaderMetadata;
 import io.vertx.core.Future;
@@ -45,7 +46,6 @@ public abstract class AmaselClientBase {
         this.userAgent = userAgent;
     }
 
-    public abstract Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, MwsObject requestObject, String endPoint, AmazonCredentials credentials) throws ApiRequestException;
 
     public MwsObject createRequestFromJson(MwsApiCall apiCallDescription, JsonObject obj) throws ApiRequestException {
         if( apiCallDescription == null ){

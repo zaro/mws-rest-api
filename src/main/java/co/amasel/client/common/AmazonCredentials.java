@@ -49,4 +49,8 @@ public class AmazonCredentials {
         }
         return new AmazonCredentials(akey, skey);
     }
+
+    public String toString() {
+        return "AmazonCredentials(accessKey=" + awsAccessKeyId + ", secretKey=" + awsSecretKeyId + ")";
+    }
 }

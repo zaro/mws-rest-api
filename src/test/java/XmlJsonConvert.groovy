@@ -35,8 +35,8 @@ suite.test("jsonToXml", { context ->
 
 def CompareMatcher isXmlIdenticalTo(String xml) {
     return CompareMatcher.isIdenticalTo(xml)
-            .throwComparisonFailure()
             .normalizeWhitespace()
+            .withNamespaceContext()
             .ignoreComments();
 }
 
@@ -50,6 +50,7 @@ suite.test("xmlFiles", { context ->
         def convertedXml = AmaselJsonToXml.convert(json)
 
 
+
         if(!isXmlIdenticalTo(xml).matches(convertedXml)){
             String desc = ""
             Diff myDiff = DiffBuilder.compare(xml).withTest(convertedXml).ignoreWhitespace().ignoreComments().build();
@@ -57,6 +58,34 @@ suite.test("xmlFiles", { context ->
                 desc += it.getComparison().toString();
             }
             context.fail(desc)
+        }
+    }
+});
+
+
+suite.test("models", { context ->
+    for(pkgName in ["maws", "products"]){
+        def resourceDir = "co/amasel/model/${pkgName}/mock/"
+        def fileList = TestsCommon.listResourceDir( resourceDir )
+        fileList.each { fileName ->
+            def xmlFileResourse = "/" + resourceDir + fileName
+            println xmlFileResourse
+            def stream = Class.getResourceAsStream(xmlFileResourse)
+            def xml = String.join("", stream.readLines())
+
+            def json = AmaselXmlToJson.convert(xml)
+            def convertedXml = AmaselJsonToXml.convert(json)
+            println json.encodePrettily()
+
+
+            if (!isXmlIdenticalTo(xml).matches(convertedXml)) {
+                String desc = ""
+                Diff myDiff = DiffBuilder.compare(xml).withTest(convertedXml).ignoreWhitespace().ignoreComments().build();
+                for (Difference it : myDiff.getDifferences()) {
+                    desc += it.getComparison().toString();
+                }
+                context.fail(desc)
+            }
         }
     }
 });

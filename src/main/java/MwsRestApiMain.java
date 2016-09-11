@@ -1,4 +1,7 @@
 import co.amasel.MwsAsyncHandler;
+import co.amasel.client.common.AmaselCachedClient;
+import co.amasel.client.common.AmaselClient;
+import co.amasel.db.Db;
 import co.amasel.misc.RuntimeConfiguration;
 import co.amasel.presets.PresetDb;
 import co.amasel.presets.PresetsService;
@@ -37,18 +40,17 @@ public class MwsRestApiMain {
         VertxOptions options = new VertxOptions();
         options.setBlockedThreadCheckInterval(1000*60*60);
 
-
-        PresetDb.init("presets.db");
-
         Vertx vertx = Vertx.vertx(options);
+
+        Db.start();
+        PresetDb.init(vertx, "presets.db");
 
         PluginShared.setMainRouter( Router.router(vertx) );
         DeploymentOptions deploymentOptions = new DeploymentOptions();
 
-        Verticle myVerticle = new MwsTest();
-        Verticle myAVerticle = new MwsAsyncHandler();
-        //vertx.deployVerticle(myVerticle, new DeploymentOptions());
-        vertx.deployVerticle(myAVerticle, deploymentOptions);
+        //vertx.deployVerticle(new MwsTest(), new DeploymentOptions());
+        vertx.deployVerticle(new MwsAsyncHandler<>("/mws"), deploymentOptions);
+        vertx.deployVerticle(new MwsAsyncHandler<AmaselCachedClient>("/mws.cached"), deploymentOptions);
         vertx.deployVerticle(new PresetsService(), deploymentOptions);
 
         File pluginsDir = new File(RuntimeConfiguration.getAppDir(), "plugins");
