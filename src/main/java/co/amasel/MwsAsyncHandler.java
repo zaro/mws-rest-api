@@ -2,14 +2,15 @@ package co.amasel;
 
 import co.amasel.client.common.*;
 import co.amasel.model.common.AmaselMwsException;
+import co.amasel.model.common.MwsJsonObjectWriter;
 import co.amasel.presets.PresetDb;
 import co.amasel.server.PluginShared;
 import com.amazonservices.mws.client.MwsResponseHeaderMetadata;
-import com.amazonservices.mws.products.MarketplaceWebServiceProductsException;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -66,6 +67,15 @@ public class MwsAsyncHandler<AmaselClientClass extends AmaselClient> extends Abs
         e.printStackTrace(new PrintWriter(sw));
         o.put("stackTrace", sw.toString());
         context.response().setStatusCode(400).putHeader("Content-Type", "application/json").end(o.encodePrettily());
+    }
+
+    public void listMwsApis(RoutingContext routingContext){
+        JsonArray result = new JsonArray();
+        for(Map.Entry<String, MwsApiCall> e : methodMap.entrySet()){
+            result.add(e.getKey());
+        }
+        HttpServerResponse r = routingContext.response();
+        r.end(result.encodePrettily());
     }
 
     public void handleRequest(RoutingContext routingContext){
@@ -176,12 +186,13 @@ public class MwsAsyncHandler<AmaselClientClass extends AmaselClient> extends Abs
                     });
                 } catch (ApiRequestException e) {
                     sendError(routingContext, e);
+                } catch (AmaselClientException e) {
+                    sendError(routingContext, e);
                 }
 
             });
 
-        } catch (io.vertx.core.VertxException |
-                MarketplaceWebServiceProductsException | io.vertx.core.json.DecodeException e) {
+        } catch (io.vertx.core.VertxException | io.vertx.core.json.DecodeException e) {
             sendError(routingContext, e);
         }
     }
@@ -199,6 +210,9 @@ public class MwsAsyncHandler<AmaselClientClass extends AmaselClient> extends Abs
         restAPI.route().handler(BodyHandler.create());
         restAPI.post("/:apiName/:requestMethod").handler(r->{
             handleRequest(r);
+        });
+        restAPI.get().handler(r->{
+           r.response().end("Only POST allowed");
         });
 
         PluginShared.getMainRouter().mountSubRouter(mountPath, restAPI);

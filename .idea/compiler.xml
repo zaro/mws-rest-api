@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <resourceExtensions />
-    <wildcardResourcePatterns>
-      <entry name="!?*.java" />
-      <entry name="!?*.form" />
-      <entry name="!?*.class" />
-      <entry name="!?*.groovy" />
-      <entry name="!?*.scala" />
-      <entry name="!?*.flex" />
-      <entry name="!?*.kt" />
-      <entry name="!?*.clj" />
-      <entry name="!?*.aj" />
-    </wildcardResourcePatterns>
-    <annotationProcessing>
-      <profile default="true" name="Default" enabled="false">
-        <processorPath useClasspath="true" />
-      </profile>
-    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="amasel-codegen_main" target="1.8" />
+      <module name="amasel-codegen_test" target="1.8" />
+      <module name="amasel-mws-base_main" target="1.8" />
+      <module name="amasel-mws-base_test" target="1.8" />
+      <module name="amasel-mws-client_main" target="1.8" />
+      <module name="amasel-mws-client_test" target="1.8" />
+      <module name="amasel-mws-lib_main" target="1.8" />
+      <module name="amasel-mws-lib_test" target="1.8" />
+      <module name="mws-rest-api_main" target="1.8" />
+      <module name="mws-rest-api_test" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

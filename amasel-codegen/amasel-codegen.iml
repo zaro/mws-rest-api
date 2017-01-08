@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module relativePaths="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output/>
+    <orderEntry type="inheritedJdk"/>
+    <content url="file://$MODULE_DIR$/">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false"/>
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false"/>
+      <sourceFolder url="file://$MODULE_DIR$/src/main/groovy" isTestSource="false"/>
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true"/>
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true"/>
+      <sourceFolder url="file://$MODULE_DIR$/src/test/groovy" isTestSource="true"/>
+      <excludeFolder url="file://$MODULE_DIR$/build"/>
+      <excludeFolder url="file://$MODULE_DIR$/.gradle"/>
+    </content>
+    <orderEntry type="sourceFolder" forTests="false"/>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.5/1730f61e9c9e59fd1b814371265334d7be0b8d2/groovy-all-2.4.5.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.5/15c718e8396a7657543c47b2816724447ee9d111/groovy-all-2.4.5-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.jboss.forge.roaster/roaster-distribution/2.19.0.Final/c52ef79c39634d0fbf58d059ddf60a556bda68bf/roaster-distribution-2.19.0.Final.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.jboss.forge.roaster/roaster-distribution/2.19.0.Final/1374fcbecc1f56a42dbe4a27e2d2e35ef216ea27/roaster-distribution-2.19.0.Final-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.m2/repository/co/amasel/amazon-mws-feeds-reports/1.1/amazon-mws-feeds-reports-1.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.m2/repository/co/amasel/amazon-mws-feeds-reports/1.1/amazon-mws-feeds-reports-1.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.m2/repository/co/amasel/amazon-mws-runtime/1.0/amazon-mws-runtime-1.0.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.m2/repository/co/amasel/amazon-mws-runtime/1.0/amazon-mws-runtime-1.0-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.m2/repository/co/amasel/amazon-mws-orders/v2015-09-24/amazon-mws-orders-v2015-09-24.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.m2/repository/co/amasel/amazon-mws-orders/v2015-09-24/amazon-mws-orders-v2015-09-24-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.m2/repository/co/amasel/amazon-mws-products/v2016-06-01/amazon-mws-products-v2016-06-01.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.m2/repository/co/amasel/amazon-mws-products/v2016-06-01/amazon-mws-products-v2016-06-01-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.m2/repository/co/amasel/amazon-mws-sellers/v2014-09-30/amazon-mws-sellers-v2014-09-30.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.m2/repository/co/amasel/amazon-mws-sellers/v2014-09-30/amazon-mws-sellers-v2014-09-30-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.m2/repository/co/amasel/amazon-mws-recommendations/v2014-10-01/amazon-mws-recommendations-v2014-10-01.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.m2/repository/co/amasel/amazon-mws-recommendations/v2014-10-01/amazon-mws-recommendations-v2014-10-01-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.2.3/37ced84d839a02fb856255eca85f0a4be95aa634/httpclient-4.2.3.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.2.3/3328e73c4c97cc62e1077ff754308c98ab1564a/httpclient-4.2.3-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.jboss.forge.roaster/roaster-jdt/2.19.0.Final/c026dfb611b81494ff31ad5a5b8f2e9a5f7f202f/roaster-jdt-2.19.0.Final.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.jboss.forge.roaster/roaster-jdt/2.19.0.Final/df7f50bdb34f75cc3596bfbd721dc47133c08c97/roaster-jdt-2.19.0.Final-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.2.2/b76bee23cd3f3ee9b98bc7c2c14670e821ddbbfd/httpcore-4.2.2.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.2.2/f09ea7959e73a80f51429a0387dc9e66d9e27cd9/httpcore-4.2.2-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.m2/repository/commons-codec/commons-codec/1.6/commons-codec-1.6.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.jboss.forge.roaster/roaster-api/2.19.0.Final/d770b96f43b89b79c71625175c757b6a3dbc8d6/roaster-api-2.19.0.Final.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.jboss.forge.roaster/roaster-api/2.19.0.Final/79be6c04131fd55f07227de81f935e455aa6ba28/roaster-api-2.19.0.Final-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.m2/repository/junit/junit/4.11/junit-4.11.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.xmlunit/xmlunit-matchers/2.1.1/ae2661bc7dc773bff263fe1eb0f2ca81606afa66/xmlunit-matchers-2.1.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.xmlunit/xmlunit-matchers/2.1.1/c2ceb94507227b990f39d3c06c4f159b63ea8745/xmlunit-matchers-2.1.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES/>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.xmlunit/xmlunit-core/2.1.1/94840bd83168c7de36f3779e2514d0bf4ed8c9bc/xmlunit-core-2.1.1.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/zaro/.gradle/caches/modules-2/files-2.1/org.xmlunit/xmlunit-core/2.1.1/7bcf5b4cc82434f00714cf97b38d7608f33f0c30/xmlunit-core-2.1.1-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+  <component name="ModuleRootManager"/>
+</module>

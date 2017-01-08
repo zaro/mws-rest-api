@@ -3,9 +3,7 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.xmlunit/xmlunit-core/2.1.1/94840bd83168c7de36f3779e2514d0bf4ed8c9bc/xmlunit-core-2.1.1.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.xmlunit/xmlunit-core/2.1.1/d8327f9fc6a625c8125d69743be73d59dbbc8738/xmlunit-core-2.1.1-javadoc.jar!/" />
-    </JAVADOC>
+    <JAVADOC />
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.xmlunit/xmlunit-core/2.1.1/7bcf5b4cc82434f00714cf97b38d7608f33f0c30/xmlunit-core-2.1.1-sources.jar!/" />
     </SOURCES>

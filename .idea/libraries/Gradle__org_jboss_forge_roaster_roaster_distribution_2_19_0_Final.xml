@@ -3,9 +3,7 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jboss.forge.roaster/roaster-distribution/2.19.0.Final/c52ef79c39634d0fbf58d059ddf60a556bda68bf/roaster-distribution-2.19.0.Final.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jboss.forge.roaster/roaster-distribution/2.19.0.Final/c83201c717315cecad405d9b70e7eb592f0bf83d/roaster-distribution-2.19.0.Final-javadoc.jar!/" />
-    </JAVADOC>
+    <JAVADOC />
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jboss.forge.roaster/roaster-distribution/2.19.0.Final/1374fcbecc1f56a42dbe4a27e2d2e35ef216ea27/roaster-distribution-2.19.0.Final-sources.jar!/" />
     </SOURCES>

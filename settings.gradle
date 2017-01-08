@@ -1,2 +1,6 @@
 rootProject.name = 'mws-rest-api'
 
+include 'amasel-codegen'
+include 'amasel-mws-base'
+include 'amasel-mws-lib'
+include 'amasel-mws-client'

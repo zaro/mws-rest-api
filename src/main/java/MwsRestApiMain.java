@@ -55,10 +55,13 @@ public class MwsRestApiMain {
 
         File pluginsDir = new File(RuntimeConfiguration.getAppDir(), "plugins");
         logger.info("Loading plugins in: " + pluginsDir.getPath());
-        for(File file : pluginsDir.listFiles()){
-            if(FilenameUtils.isExtension(file.getName(),new String[]{"js", "rb", "groovy"})){
-                logger.info("Starting : " + file.getAbsolutePath());
-                vertx.deployVerticle(file.getAbsolutePath(), deploymentOptions);
+        File[] pluginList = pluginsDir.listFiles();
+        if( pluginList != null) {
+            for (File file : pluginList) {
+                if (FilenameUtils.isExtension(file.getName(), new String[]{"js", "rb", "groovy"})) {
+                    logger.info("Starting : " + file.getAbsolutePath());
+                    vertx.deployVerticle(file.getAbsolutePath(), deploymentOptions);
+                }
             }
         }
 

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: :MWSOrders_2013-09-01_v2015-09-24:">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/mws-lib/MWSOrdersJavaClientLibrary/dist/MWSOrders_2013-09-01_v2015-09-24.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

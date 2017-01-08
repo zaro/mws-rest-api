@@ -3,9 +3,7 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.5/1730f61e9c9e59fd1b814371265334d7be0b8d2/groovy-all-2.4.5.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.5/e881bc6fecd0f10d0f267acd12f9640e8e9f3857/groovy-all-2.4.5-javadoc.jar!/" />
-    </JAVADOC>
+    <JAVADOC />
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.5/15c718e8396a7657543c47b2816724447ee9d111/groovy-all-2.4.5-sources.jar!/" />
     </SOURCES>

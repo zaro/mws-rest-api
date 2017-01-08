@@ -14,8 +14,6 @@ import java.util.regex.Pattern;
  * Created by zaro on 5/27/16.
  */
 public class RuntimeConfiguration {
-    public static Pattern isNumber = Pattern.compile("^\\s*-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?\\s*$");
-
 
     static String trailingSlash(String path){
         if(path != null && path.charAt(path.length()-1) != '/'){

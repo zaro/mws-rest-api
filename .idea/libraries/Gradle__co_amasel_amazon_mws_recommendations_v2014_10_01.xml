@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: co.amasel:amazon-mws-recommendations:v2014-10-01">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/amasel-mws-client/Could not find co.amasel:amazon-mws-recommendations:v2014-10-01." />
+      <root url="jar://$MAVEN_REPOSITORY$/co/amasel/amazon-mws-recommendations/v2014-10-01/amazon-mws-recommendations-v2014-10-01.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/co/amasel/amazon-mws-recommendations/v2014-10-01/amazon-mws-recommendations-v2014-10-01-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

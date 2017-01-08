@@ -71,6 +71,7 @@ public class PresetDb {
                 return;
             }
             final SQLConnection connection = conn.result();
+            logger.info("get('" + key + "')");
             connection.queryWithParams("SELECT value FROM preset_config WHERE key = ?", new JsonArray().add(key), rs -> {
                 if (rs.failed()) {
                     logger.error("Cannot retrieve the data from the database: " + rs.cause().getMessage());

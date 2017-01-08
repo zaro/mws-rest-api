@@ -7,6 +7,7 @@ version '1.0-SNAPSHOT'
 
 apply plugin: 'application'
 apply plugin: 'idea'
+apply plugin: 'distribution'
 
 ext {
     vertxVersion = '3.2.1'
@@ -16,15 +17,8 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    mavenLocal()
     jcenter()
-    flatDir {
-        dirs = [
-                "$projectDir/mws-lib/MWSOrdersJavaClientLibrary/dist",
-                "$projectDir/mws-lib/MWSProductsJavaClientLibrary/dist",
-                "$projectDir/mws-lib/amazon-mws-feeds/dist",
-                "$projectDir/mws-lib/MWSSellersJavaClientLibrary-2011-07-01._V325005493_/dist"
-        ]
-    }
 }
 
 dependencies {
@@ -35,12 +29,12 @@ dependencies {
     compile "io.vertx:vertx-jdbc-client:$vertxVersion"
     compile "io.vertx:vertx-rx-java:$vertxVersion"
     compile "io.vertx:vertx-unit:$vertxVersion"
-    compile "org.apache.httpcomponents:httpclient:4.2.3"
+   // compile "org.apache.httpcomponents:httpclient:4.2.3"
 //    compile "org.codehaus.woodstox:woodstox-core-asl:4.4.1"
 //    compile "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.6.3"
 //    compile "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.4.0"
 //    compile 'org.jodd:jodd-bean:3.6.7'
-    compile 'org.apache.commons:commons-csv:1.3'
+ //   compile 'org.apache.commons:commons-csv:1.3'
     compile 'commons-io:commons-io:2.5'
     compile 'org.apache.commons:commons-lang3:3.4'
     // http://mvnrepository.com/artifact/org.mapdb/mapdb
@@ -48,12 +42,9 @@ dependencies {
     // https://mvnrepository.com/artifact/com.h2database/h2
     compile group: 'com.h2database', name: 'h2', version: '1.4.192'
     compile 'org.elasticsearch.distribution.test:elasticsearch:2.3.3'
-    compile name: "MWSClientJavaRuntime-1.0"
-    compile name: "MWSProducts_2011-10-01_v2015-09-01"
-    compile name: "MWSOrders_2013-09-01_v2015-09-24"
-    compile name: "MWSSellers_2011-07-01_v2014-09-30"
-    compile name: "MaWSJavaClientLibrary-1.1"
-    compile 'org.jboss.forge.roaster:roaster-distribution:2.19.0.Final'
+    compile project('amasel-mws-base')
+    compile project('amasel-mws-lib')
+    compile project('amasel-mws-client')
     testCompile 'org.xmlunit:xmlunit-matchers:2.1.1'
 }
 
@@ -69,9 +60,132 @@ startScripts {
     }
 }
 
+distributions {
+    main {
+        contents {
+            from('.') {
+                include "cfg/**"
+            }
+        }
+    }
+}
+
+subprojects {
+    group 'co.amasel'
+    version '1.0-SNAPSHOT'
+
+
+    apply plugin: 'idea'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+
+}
+
+
+project(':amasel-codegen') {
+    apply plugin: 'groovy'
+    apply plugin: 'application'
+    apply plugin: 'distribution'
+
+    mainClassName = 'co.amasel.codegen.Codegen'
+
+    distributions {
+        main{
+            baseName = 'amasel-codegen'
+        }
+    }
+    dependencies {
+        compile 'org.codehaus.groovy:groovy-all:2.4.5'
+
+        compile 'org.jboss.forge.roaster:roaster-distribution:2.19.0.Final'
+
+        compile 'co.amasel:amazon-mws-feeds-reports:1.1'
+        compile 'co.amasel:amazon-mws-runtime:1.0'
+        compile 'co.amasel:amazon-mws-orders:v2015-09-24'
+        compile 'co.amasel:amazon-mws-products:v2016-06-01'
+        compile 'co.amasel:amazon-mws-sellers:v2014-09-30'
+        compile 'co.amasel:amazon-mws-recommendations:v2014-10-01'
+
+        compile "org.apache.httpcomponents:httpclient:4.2.3"
+
+        testCompile group: 'junit', name: 'junit', version: '4.11'
+        testCompile 'org.xmlunit:xmlunit-matchers:2.1.1'
+    }
+
+    task codegen(type:JavaExec) {
+        main = mainClassName
+        classpath = sourceSets.main.runtimeClasspath
+        args(new File(rootDir, '/mws-libs-from-amazon/sources/'), new File(rootDir, '/amasel-mws-lib/src/main/java/co/amasel'))
+    }
+}
+
+project(':amasel-mws-base') {
+    apply plugin: 'java-library-distribution'
+
+    distributions {
+        main{
+            baseName = 'amasel-mws-base'
+        }
+    }
+    dependencies {
+        compile "io.vertx:vertx-core:$vertxVersion"
+        compile "io.vertx:vertx-lang-groovy:$vertxVersion"
+        compile "io.vertx:vertx-lang-js:$vertxVersion"
+        compile "io.vertx:vertx-web:$vertxVersion"
+        compile "io.vertx:vertx-jdbc-client:$vertxVersion"
+        compile "io.vertx:vertx-rx-java:$vertxVersion"
+        compile "io.vertx:vertx-unit:$vertxVersion"
+
+        compile "org.apache.httpcomponents:httpclient:4.2.3"
+        compile 'org.apache.commons:commons-csv:1.3'
+
+        compile 'co.amasel:amazon-mws-runtime:1.0'
+
+        testCompile group: 'junit', name: 'junit', version: '4.11'
+        testCompile 'org.xmlunit:xmlunit-matchers:2.1.1'
+    }
+}
+
+project(':amasel-mws-lib') {
+    apply plugin: 'java-library-distribution'
+
+    distributions {
+        main{
+            baseName = 'amasel-mws-lib'
+        }
+    }
+    dependencies {
+        compile project(':amasel-mws-base')
+        compile "io.vertx:vertx-core:$vertxVersion"
+    }
+}
+
+project(':amasel-mws-client') {
+    apply plugin: 'java-library-distribution'
+
+    distributions {
+        main{
+            baseName = 'amasel-mws-client'
+        }
+    }
+    dependencies {
+        compile project(':amasel-mws-lib')
+
+        testCompile 'org.xmlunit:xmlunit-matchers:2.1.1'
+    }
+}
+
+
 idea{
     module {
         downloadJavadoc = true // defaults to false
         downloadSources = true
     }
+}
+
+task wrapper(type: Wrapper) {
 }

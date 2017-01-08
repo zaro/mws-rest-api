@@ -20,19 +20,19 @@ public class Db {
     static protected Client client;
 
     public static void start() {
-        final Settings.Builder builder = Settings.settingsBuilder();
-        builder.put("node.name" , "mws-rest-api");
-        builder.put("path.home", RuntimeConfiguration.getAppDir() + "db" );
-        builder.put("http.enabled", true);
-        server = nodeBuilder().settings(builder).local(true).data(true).node();
-        client = server.client();
-        CacheDb.createCacheTemplate();
+//        final Settings.Builder builder = Settings.settingsBuilder();
+//        builder.put("node.name" , "mws-rest-api");
+//        builder.put("path.home", RuntimeConfiguration.getAppDir() + "db" );
+//        builder.put("http.enabled", true);
+//        server = nodeBuilder().settings(builder).local(true).data(true).node();
+//        client = server.client();
+//        CacheDb.createCacheTemplate();
     }
 
     public static void stop() {
-        if(server != null){
-            server.close();
-        }
+//        if(server != null){
+//            server.close();
+//        }
     }
 
 }

@@ -3,9 +3,7 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.xmlunit/xmlunit-matchers/2.1.1/ae2661bc7dc773bff263fe1eb0f2ca81606afa66/xmlunit-matchers-2.1.1.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.xmlunit/xmlunit-matchers/2.1.1/58abeaf0fc54964765f72cd8bc2c56bee9126726/xmlunit-matchers-2.1.1-javadoc.jar!/" />
-    </JAVADOC>
+    <JAVADOC />
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.xmlunit/xmlunit-matchers/2.1.1/c2ceb94507227b990f39d3c06c4f159b63ea8745/xmlunit-matchers-2.1.1-sources.jar!/" />
     </SOURCES>
