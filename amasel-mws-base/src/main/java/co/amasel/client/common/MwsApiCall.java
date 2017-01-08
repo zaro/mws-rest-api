@@ -11,6 +11,7 @@ public class MwsApiCall {
     private final Class<? extends AmaselMwsObject> responseClass;
     private final String servicePath;
     private final String serviceVersion;
+    private final Class<? extends MwsPostDataTransformer> postDataTransformerClass;
 
 
     public MwsApiCall(String operationName, Class<? extends AmaselMwsObject> requestClass, Class<? extends AmaselMwsObject> responseClass, String servicePath, String serviceVersion) {
@@ -19,6 +20,16 @@ public class MwsApiCall {
         this.responseClass = responseClass;
         this.servicePath = servicePath;
         this.serviceVersion = serviceVersion;
+        this.postDataTransformerClass = MwsPostDataTransformer.class;
+    }
+
+    public MwsApiCall(String operationName, Class<? extends AmaselMwsObject> requestClass, Class<? extends AmaselMwsObject> responseClass, String servicePath, String serviceVersion, Class<? extends MwsPostDataTransformer> postDataTransformerClass) {
+        this.operationName = operationName;
+        this.requestClass = requestClass;
+        this.responseClass = responseClass;
+        this.servicePath = servicePath;
+        this.serviceVersion = serviceVersion;
+        this.postDataTransformerClass = postDataTransformerClass;
     }
 
     public String getServicePath() {
@@ -38,5 +49,16 @@ public class MwsApiCall {
     }
     public Class<? extends AmaselMwsObject> getRequestClass() {
         return this.requestClass;
+    }
+
+    public MwsPostDataTransformer makePostDataTransformer() {
+        try {
+            return postDataTransformerClass.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

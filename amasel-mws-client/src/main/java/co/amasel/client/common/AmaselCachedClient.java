@@ -14,8 +14,8 @@ import java.util.Optional;
 public class AmaselCachedClient extends AmaselClient {
     class CachedAmaselClientRequest extends AmaselClientRequest{
 
-        public CachedAmaselClientRequest(MwsApiCall apiCallDescription, MwsObject requestObject, Future<MwsApiResponse> result, String endPoint, AmazonCredentials credentials, int numberOfRetries) {
-            super(apiCallDescription, requestObject, result, endPoint, credentials, numberOfRetries);
+        public CachedAmaselClientRequest(MwsApiCall apiCallDescription, MwsObject requestObject, Future<MwsApiResponse> result, String endPoint, AmazonCredentials credentials, MwsPostDataTransformer postData, int numberOfRetries) {
+            super(apiCallDescription, requestObject, result, endPoint, credentials, postData, numberOfRetries);
         }
     }
 
@@ -30,7 +30,7 @@ public class AmaselCachedClient extends AmaselClient {
             throw new AmaselClientException("Invalid method description: null");
         }
 
-        new CachedAmaselClientRequest(apiCallDescription, requestObject,result, endPoint,credentials, 3).makeRequest();
+        new CachedAmaselClientRequest(apiCallDescription, requestObject,result, endPoint,credentials, null, 3).makeRequest();
         return result;
     }
 
@@ -42,8 +42,10 @@ public class AmaselCachedClient extends AmaselClient {
         }
         // Create a request.
         MwsObject request = createRequestFromJson(apiCallDescription, requestObject);
+        MwsPostDataTransformer postData = apiCallDescription.makePostDataTransformer();
+        postData.init(requestObject);
 
-        new AmaselClientRequest(apiCallDescription, request,result, endPoint,credentials, 3).makeRequest();
+        new AmaselClientRequest(apiCallDescription, request,result, endPoint,credentials, postData, 3).makeRequest();
         return result;
     }
 

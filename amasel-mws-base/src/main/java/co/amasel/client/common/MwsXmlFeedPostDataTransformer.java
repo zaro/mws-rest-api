@@ -26,14 +26,20 @@ public class MwsXmlFeedPostDataTransformer extends MwsPostDataTransformer {
 
     Document doc;
 
-    public MwsXmlFeedPostDataTransformer(JsonObject request, String sellerId){
-        super(request, sellerId);
-        this.sellerId = sellerId;
+    public MwsXmlFeedPostDataTransformer(){
+    }
+
+    public MwsXmlFeedPostDataTransformer init(JsonObject request){
+        super.init(request);
+        this.sellerId = request.getString("SellerId");
         messageId = 1;
         getDocument();
         buildXmlDoc(request);
         makeBody();
+        return this;
     }
+
+
 
     protected Document getDocument() {
         DocumentBuilderFactory icFactory = DocumentBuilderFactory.newInstance();
@@ -60,10 +66,9 @@ public class MwsXmlFeedPostDataTransformer extends MwsPostDataTransformer {
         message.appendChild(makeElement("MessageID", String.valueOf(messageId++)));
         message.appendChild(makeElement("OperationType", jsonMessage.getString("OperationType", "Update")));
 
-        JsonObject jsonMsgContent = jsonMessage.getJsonObject(messageType);
         Element messageContent = doc.createElement(messageType);
-        for(String key: jsonMsgContent.fieldNames()) {
-            messageContent.appendChild(makeElement(key, String.valueOf(jsonMsgContent.getValue(key))));
+        for(String key: jsonMessage.fieldNames()) {
+            messageContent.appendChild(makeElement(key, String.valueOf(jsonMessage.getValue(key))));
         }
 
         message.appendChild(messageContent);

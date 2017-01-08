@@ -7,6 +7,7 @@ import co.amasel.model.common.AmaselMwsObject;
 import com.amazonservices.mws.client.MwsObject;
 import com.amazonservices.mws.client.MwsResponseHeaderMetadata;
 import io.vertx.core.Future;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -17,24 +18,28 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
  * Created by zaro on 5/20/16.
  */
 public abstract class AmaselClientBase {
-    protected static  String userAgentPlatform =
+    protected static String userAgentPlatform =
             "mws-rest-api/1.0 (Language=" +
-            System.getProperty("java.version") + "/" +
-            System.getProperty("java.class.version")  + "/" +
-            System.getProperty("java.vendor") +  "; Platform=" +
+                    System.getProperty("java.version") + "/" +
+                    System.getProperty("java.class.version") + "/" +
+                    System.getProperty("java.vendor") + "; Platform=" +
 
-            System.getProperty("os.name") + "/" +
-            System.getProperty("os.arch") + "/" +
-            System.getProperty("os.version") +
-            ")";
+                    System.getProperty("os.name") + "/" +
+                    System.getProperty("os.arch") + "/" +
+                    System.getProperty("os.version") +
+                    ")";
 
     protected final Logger logger = LoggerFactory.getLogger("AmaselClient");
+    public AmazonCredentials credentials;
+    public String endPoint;
 
     protected String userAgent = userAgentPlatform;
 
@@ -48,7 +53,7 @@ public abstract class AmaselClientBase {
 
 
     public MwsObject createRequestFromJson(MwsApiCall apiCallDescription, JsonObject obj) throws AmaselClientException {
-        if( apiCallDescription == null ){
+        if (apiCallDescription == null) {
             return null;
         }
         Class cls = apiCallDescription.getRequestClass();
@@ -64,7 +69,6 @@ public abstract class AmaselClientBase {
      * Get the metadata from the response headers.
      *
      * @param response
-     *
      * @return The metadata.
      */
     protected MwsResponseHeaderMetadata getResponseHeaderMetadata(HttpClientResponse response) {
@@ -102,21 +106,49 @@ public abstract class AmaselClientBase {
         return new MwsResponseHeaderMetadata(requestId, context, timestamp, quotaMax, quotaRemaining, quotaResetDate);
     }
 
+    protected String calcMD5(String message) {
+        return calcMD5(message.getBytes());
+    }
+
+    protected String calcMD5(Buffer totalBuffer) {
+        return calcMD5(totalBuffer.getBytes());
+    }
+
+    protected String calcMD5(byte[] buffer) {
+        String md5Hash = null;
+        try {
+            MessageDigest md5Calc = MessageDigest.getInstance("MD5");
+            md5Calc.update(buffer);
+            md5Hash = Base64.getEncoder().encodeToString(md5Calc.digest());
+        } catch (NoSuchAlgorithmException e) {
+            md5Hash = "[FAILED TO CALCULATE MD5]";
+        }
+        return md5Hash;
+    }
+
     public static class Request {
 
 
         AmazonCredentials credentials;
-        /** Method to use to create signature. */
+        /**
+         * Method to use to create signature.
+         */
         final String signatureMethod = "HmacSHA256";
 
-        /** Use signature version. */
+        /**
+         * Use signature version.
+         */
         final String signatureVersion = "2";
 
-        /** The name of the operation to perform. */
+        /**
+         * The name of the operation to perform.
+         */
         final String operationName;
 
-        /** Container for parameters. */
-        private Map<String, String> parameters ;
+        /**
+         * Container for parameters.
+         */
+        private Map<String, String> parameters;
 
         String requestParams;
         String serviceEndpointUrl;
@@ -132,14 +164,14 @@ public abstract class AmaselClientBase {
             this.operationName = operationName;
         }
 
-        public Request withRequest(MwsObject object){
+        public Request withRequest(MwsObject object) {
             MwsObjectToPostParams p = new MwsObjectToPostParams();
             object.writeFragmentTo(p);
             parameters = p.getParameters();
             return this;
         }
 
-        public Request withServiceEndpoint(String serviceEndpointUrl, String serviceEndpointVersion){
+        public Request withServiceEndpoint(String serviceEndpointUrl, String serviceEndpointVersion) {
             this.serviceEndpointUrl = serviceEndpointUrl;
             this.serviceEndpointVersion = serviceEndpointVersion;
             return this;
@@ -156,14 +188,14 @@ public abstract class AmaselClientBase {
         }
 
         public String getRequestParams() {
-            if (requestParams != null){
+            if (requestParams != null) {
                 return requestParams;
             }
 
             URI serviceEndpointUri;
             try {
                 serviceEndpointUri = new URI(serviceEndpointUrl);
-                if(serviceEndpointUri.getPath().isEmpty()){
+                if (serviceEndpointUri.getPath().isEmpty()) {
                     serviceEndpointUri = serviceEndpointUri.resolve("/");
                 }
             } catch (URISyntaxException e) {
@@ -213,4 +245,22 @@ public abstract class AmaselClientBase {
 
     }
 
+    public AmaselClientBase withCredentials(AmazonCredentials credentials) {
+        this.credentials = credentials;
+        return this;
+    }
+
+    public AmaselClientBase withEndpoint(String endPoint) {
+        this.endPoint = endPoint;
+        return this;
+    }
+
+    public abstract Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, JsonObject requestObject, String endPoint, AmazonCredentials credentials) throws AmaselClientException;
+    public abstract Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, AmaselMwsObject requestObject, String endPoint, AmazonCredentials credentials) throws AmaselClientException;
+
+    public abstract Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, JsonObject requestObject, String endPoint) throws AmaselClientException;
+    public abstract Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, AmaselMwsObject requestObject, String endPoint) throws AmaselClientException;
+
+    public abstract Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, JsonObject requestObject) throws AmaselClientException;
+    public abstract Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, AmaselMwsObject requestObject) throws AmaselClientException;
 }

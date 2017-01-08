@@ -28,7 +28,7 @@ static <T> void assertThat(TestContext context, String reason,
 
 suite.test("FeedContent", { context ->
     JsonObject json = new JsonObject('''{
-                "SellerId" : "sellerid",
+                "SellerId" : "M_SELLER_354577",
                 "MWSAuthToken" : "authToken",
                 "MarketplaceId" : "marketPlaceId",
                 "Query" : "queryString",
@@ -38,17 +38,13 @@ suite.test("FeedContent", { context ->
                     "MessageType" : "Inventory",
                     "messages" : [
                         {
-                            "Inventory" : {
-                                "SKU": "ASUSVNA1", 
-                                "Quantity" : 8,
-                                "FulfillmentLatency": 1 
-                            }
+                            "SKU": "ASUSVNA1", 
+                            "Quantity" : 8,
+                            "FulfillmentLatency": 1 
                         }, {
-                            "Inventory" : {
-                                "SKU": "ASUS8VM" ,
-                                "Quantity" : 6,
-                                "FulfillmentLatency": 1 
-                            }
+                            "SKU": "ASUS8VM" ,
+                            "Quantity" : 6,
+                            "FulfillmentLatency": 1 
                         }
                     ]
                 }
@@ -81,7 +77,7 @@ suite.test("FeedContent", { context ->
     </Message>
 </AmazonEnvelope>''';
     println MwsXmlFeedPostDataTransformer.methods*.name.sort().unique()
-    def converter = new co.amasel.client.common.MwsXmlFeedPostDataTransformer(json, "M_SELLER_354577");
+    def converter = new co.amasel.client.common.MwsXmlFeedPostDataTransformer(json);
     assertThat(context, 'XML different' ,converter.getPostData(), CompareMatcher.isSimilarTo(xml).ignoreWhitespace())
 });
 

@@ -18,7 +18,7 @@ public class MethodMap implements AmaselMethodMap {
     
     public static MwsApiCall GetFeedSubmissionResult = new MwsApiCall("GetFeedSubmissionResult", GetFeedSubmissionResultRequest.class, GetFeedSubmissionResultResponse.class, "/", "2009-01-01");
     
-    public static MwsApiCall SubmitFeed = new MwsApiCall("SubmitFeed", SubmitFeedRequest.class, SubmitFeedResponse.class, "/", "2009-01-01");
+    public static MwsApiCall SubmitFeed = new MwsApiCall("SubmitFeed", SubmitFeedRequest.class, SubmitFeedResponse.class, "/", "2009-01-01", MwsXmlFeedPostDataTransformer.class);
     
 
     static public void init(String prefix, HashMap<String, MwsApiCall> map) {

@@ -7,8 +7,10 @@ import io.vertx.core.json.JsonObject;
  */
 public class MwsPostDataTransformer {
 
-    public MwsPostDataTransformer(JsonObject request, String sellerId){
+    public MwsPostDataTransformer(){
     }
+
+    public MwsPostDataTransformer init(JsonObject request) { return this;}
 
     public boolean hasPostData() {
         return false;

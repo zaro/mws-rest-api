@@ -53,9 +53,9 @@ public class AmaselClient extends AmaselClientBase {
         HttpResponseHandler responseHandler;
         int numberOfRetries;
         int retryDelayMs;
-        public  String httpBody;
+        MwsPostDataTransformer postData;
 
-        public AmaselClientRequest(MwsApiCall apiCallDescription, MwsObject requestObject, Future<MwsApiResponse> result, String endPoint, AmazonCredentials credentials, int numberOfRetries) {
+        public AmaselClientRequest(MwsApiCall apiCallDescription, MwsObject requestObject, Future<MwsApiResponse> result, String endPoint, AmazonCredentials credentials, MwsPostDataTransformer postData, int numberOfRetries) {
             this.apiCallDescription = apiCallDescription;
             this.requestObject = requestObject;
             this.result = result;
@@ -72,6 +72,7 @@ public class AmaselClient extends AmaselClientBase {
             this.credentials = credentials;
             this.numberOfRetries = numberOfRetries;
             this.retryDelayMs = 1000;
+            this.postData = postData != null ? postData : new MwsPostDataTransformer();
         }
 
         HttpResponseHandler getResponseHandler(){
@@ -88,19 +89,31 @@ public class AmaselClient extends AmaselClientBase {
             Request r = new Request( credentials, apiCallDescription.getOperationName())
                     .withRequest(requestObject)
                     .withServiceEndpoint(uri, apiCallDescription.getServiceVersion());
+            String absUrl = uri + "?" + r.getRequestQs();
 
-            HttpClientRequest request = client.postAbs(uri + "?" + r.getRequestQs(), getResponseHandler());
+            HttpClientRequest request = client.postAbs( absUrl, getResponseHandler());
             request.exceptionHandler( exception ->{
                 failRequest(exception);
             });
-            request.putHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+
             request.putHeader("X-Amazon-User-Agent", getUserAgent());
             request.putHeader("User-Agent", getUserAgent());
             request.putHeader("Connection", "Keep-Alive");
+            if(postData.hasPostData()) {
+                request.putHeader("Content-MD5", calcMD5(postData.getPostData()));
+                request.putHeader("Content-Type",postData.getContentType() );
+            }
+            logger.info(absUrl);
+            logger.info(postData.hasPostData());
+            logger.info(postData.getPostData());
+            logger.info(r.getRequestBody());
 
             try {
-                String requestBody = httpBody != null ? httpBody : r.getRequestBody();
-                request.end(requestBody);
+                if(postData.hasPostData()) {
+                    request.end(postData.getPostData());
+                } else {
+                    request.end();
+                }
             } catch (RuntimeException exception) {
                 throw new AmaselClientException(exception.toString());
             }
@@ -213,14 +226,7 @@ public class AmaselClient extends AmaselClientBase {
                 public void handle(Buffer totalBuffer) {
                     MwsResponseHeaderMetadata meta = getResponseHeaderMetadata(response);
                     if (response.statusCode() == 200) {
-                        String md5Hash = null;
-                        try {
-                            MessageDigest md5Calc = MessageDigest.getInstance("MD5");
-                            md5Calc.update(totalBuffer.getBytes());
-                            md5Hash = Base64.getEncoder().encodeToString(md5Calc.digest());
-                        } catch (NoSuchAlgorithmException e) {
-                            md5Hash = "[FAILED TO CALCULATE MD5]";
-                        }
+                        String md5Hash = calcMD5(totalBuffer);
                         String amazonMd5 = response.getHeader("Content-MD5");
                         if (amazonMd5 == null) {
                             amazonMd5 = "[MISSING]";
@@ -254,7 +260,7 @@ public class AmaselClient extends AmaselClientBase {
         if(apiCallDescription == null){
             throw new AmaselClientException("Invalid method description: null");
         }
-        new AmaselClientRequest(apiCallDescription, requestObject,result, endPoint,credentials, 3).makeRequest();
+        new AmaselClientRequest(apiCallDescription, requestObject,result, endPoint,credentials, null,  3).makeRequest();
         return result;
     }
 
@@ -265,9 +271,27 @@ public class AmaselClient extends AmaselClientBase {
         }
         // Create a request.
         MwsObject request = createRequestFromJson(apiCallDescription, requestObject);
+        MwsPostDataTransformer postData = apiCallDescription.makePostDataTransformer();
+        postData.init(requestObject);
 
-        new AmaselClientRequest(apiCallDescription, request,result, endPoint,credentials, 3).makeRequest();
+        new AmaselClientRequest(apiCallDescription, request,result, endPoint,credentials, postData, 3).makeRequest();
         return result;
+    }
+
+    public Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, AmaselMwsObject requestObject, String endPoint) throws AmaselClientException {
+        return invoke(apiCallDescription, requestObject, endPoint, this.credentials);
+    }
+
+    public Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, JsonObject requestObject, String endPoint) throws AmaselClientException {
+        return invoke(apiCallDescription, requestObject, endPoint, this.credentials);
+    }
+
+    public Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, AmaselMwsObject requestObject) throws AmaselClientException {
+        return invoke(apiCallDescription, requestObject, endPoint, credentials);
+    }
+
+    public Future<MwsApiResponse> invoke(MwsApiCall apiCallDescription, JsonObject requestObject) throws AmaselClientException {
+        return invoke(apiCallDescription, requestObject, endPoint, credentials);
     }
 
 }

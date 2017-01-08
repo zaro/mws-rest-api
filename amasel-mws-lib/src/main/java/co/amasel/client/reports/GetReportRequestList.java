@@ -1,26 +1,23 @@
 package co.amasel.client.reports;
 
 import io.vertx.core.Future;
-import io.vertx.core.Vertx;
 
 import co.amasel.client.common.AmaselClientException;
-import co.amasel.client.common.AmaselClient;
-import co.amasel.client.common.AmazonCredentials;
+import co.amasel.client.common.AmaselClientBase;
 import co.amasel.client.common.MwsApiResponse;
 import co.amasel.client.reports.MethodMap;
 import co.amasel.model.reports.*;
 
 
 
-public class GetReportRequestList extends AmaselClient {
-    String endPoint;
-    AmazonCredentials credentials;
-    public static AmaselClient fromVertxInstance(Vertx vertx) {
-        AmaselClient c = new AmaselClient();
-        c.vertx = vertx;
-        return  c;
+public class GetReportRequestList {
+    protected AmaselClientBase client;
+    
+    public GetReportRequestList(AmaselClientBase client) {
+        this.client = client;
     }
+    
     public Future<MwsApiResponse> invoke(GetReportRequestListRequest request) throws AmaselClientException {
-        return invoke(MethodMap.GetReportRequestList, request, endPoint, credentials);
+        return client.invoke(MethodMap.GetReportRequestList, request);
     }
 }

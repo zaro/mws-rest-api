@@ -18,9 +18,16 @@ import <%=  modelPackage %>;
 public class MethodMap implements AmaselMethodMap {
     static HashMap<String, MwsApiCall> methodMap = new HashMap<>();
 
-    <%  apiMethods.each { p -> %>
+    <%  apiMethods.each { p -> 
+        if (p.postDataTransformer) {
+    %>
+    public static MwsApiCall <%= p.methodName %> = new MwsApiCall("<%= p.methodName %>", <%= p.methodName %>Request.class, <%= p.methodName %>Response.class, "<%= servicePath %>", "<%= serviceVersion %>", <%= p.postDataTransformer %>.class);
+    <%  } else {%>
     public static MwsApiCall <%= p.methodName %> = new MwsApiCall("<%= p.methodName %>", <%= p.methodName %>Request.class, <%= p.methodName %>Response.class, "<%= servicePath %>", "<%= serviceVersion %>");
-    <% } %>
+    <% 
+        } 
+     }
+    %>
 
     static public void init(String prefix, HashMap<String, MwsApiCall> map) {
         if(prefix == null){

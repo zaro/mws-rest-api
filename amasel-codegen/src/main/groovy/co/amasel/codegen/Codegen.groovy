@@ -112,6 +112,9 @@ class Codegen {
                         },
                         configClass : "com.amazonaws.mws.MarketplaceWebServiceConfig",
                         srcDir      : "amazon-mws-feeds-reports/src/",
+                        postDataTransformers: [
+                                "SubmitFeed" : "MwsXmlFeedPostDataTransformer",
+                        ],
                 ],
                 'amazon-mws-products'     : [
                          model      : "com.amazonservices.mws.products.model",
@@ -154,6 +157,7 @@ class Codegen {
                         outModelNamesFun = pack.value.outputModel
                     }
 
+
                     def templateMethodMap = ModelTemplate.get(modelName)
 
 
@@ -165,6 +169,7 @@ class Codegen {
                             continue
                         }
                         def classSimpleName = cls.getSimpleName()
+
                         String methodName = null
                         if (classSimpleName.endsWith("Request") || classSimpleName.endsWith("Response")) {
                             methodName = classSimpleName.replaceAll("Request\$|Response\$", "")
@@ -228,11 +233,11 @@ class Codegen {
                                 reqRespMap[outModelName][methodName] = 1 + (reqRespMap[outModelName][methodName] ? reqRespMap[outModelName][methodName] : 0)
                             }
                             def binding = [
-                                    packageName      : 'co.amasel.model.' + outModelName,
-                                    sourcePackageName: sourcePackageName,
-                                    fullClassName    : cls.getName(),
-                                    className        : cls.getSimpleName(),
-                                    props            : props
+                                    packageName       : 'co.amasel.model.' + outModelName,
+                                    sourcePackageName : sourcePackageName,
+                                    fullClassName     : cls.getName(),
+                                    className         : cls.getSimpleName(),
+                                    props             : props,
                             ]
 
                             def modelDir = new File(new File(dir, "model"), outModelName)
@@ -289,12 +294,23 @@ class Codegen {
                     for (clientModelName in reqRespMap.keySet()) {
                         def apiMethods = []
                         println("--- Generating model " + clientModelName + "---")
+
+                        def postDataTransformers = [:];
+                        if (pack.value.postDataTransformers) {
+                            postDataTransformers = pack.value.postDataTransformers
+                        }
+
                         reqRespMap[clientModelName].each { k, v ->
                             if (v != 2) {
                                 println "Mismatched req/res : " + k + "  : " + v
                                 return
                             }
-                            apiMethods.push([methodName: k])
+
+                            apiMethods.push([
+                                    methodName: k,
+                                    postDataTransformer : postDataTransformers[k],
+
+                            ])
                         }
 
                         def modelDir = new File(new File(dir, "client"), clientModelName)
