@@ -11,9 +11,6 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.sql.SQLConnection;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
-import org.mapdb.Serializer;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,7 +28,6 @@ public class PresetDb {
 
 
     static ConcurrentMap<String, String> map = null;
-    static DB db = null;
 
     static public Future<Boolean> init(Vertx vertx, String path) {
         final Future<Boolean> result =  Future.future();
