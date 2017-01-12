@@ -41,6 +41,7 @@ public class MwsAsyncHandler<AmaselClientClass extends AmaselClient> extends Abs
         co.amasel.client.products.MethodMap.init("products", methodMap);
         co.amasel.client.orders.MethodMap.init("orders", methodMap);
         co.amasel.client.sellers.MethodMap.init("sellers", methodMap);
+        co.amasel.client.recommendations.MethodMap.init("recommendations", methodMap);
     }
 
     private String mountPath;
@@ -160,6 +161,11 @@ public class MwsAsyncHandler<AmaselClientClass extends AmaselClient> extends Abs
                                     MwsJsonObjectWriter out = new MwsJsonObjectWriter();
                                     response.response.writeFragmentTo(out);
                                     outObj.put(resultKey, out.getJsonObject());
+                                    JsonObject headers = new JsonObject();
+                                    for(Map.Entry<String, String> it: response.headers){
+                                        headers.put(it.getKey(), it.getValue());
+                                    }
+                                    outObj.put("_headers", headers);
                                 } else {
                                     outObj.put(resultKey, response.asJsonObjectOrArray(params));
                                 }

@@ -134,10 +134,10 @@ class Codegen {
                          configClass: "com.amazonservices.mws.sellers.MarketplaceWebServiceSellersConfig",
                          srcDir     : "amazon-mws-sellers/src/",
                  ],
-                "amazon-mws-recommendations"      : [
-                        model      : "com.amazonservices.mws.recommendations.model",
+                "amazon-mws-recommendations" : [
+                        model      : "com.amazon.mws.recommendations.model",
                         outputModel: "recommendations",
-                        configClass: "com.amazonservices.mws.recommendations.MarketplaceWebServiceSellersConfig",
+                        configClass: "com.amazon.mws.recommendations.MWSRecommendationsSectionServiceConfig",
                         srcDir     : "amazon-mws-recommendations/src/",
                 ],
         ]
@@ -159,7 +159,6 @@ class Codegen {
 
 
                     def templateMethodMap = ModelTemplate.get(modelName)
-
 
                     for (cls in ClassEnumerator.processJarfile(url, sourcePackageName)) {
 //                        if (cls.isInterface() || cls.isEnum()) {
