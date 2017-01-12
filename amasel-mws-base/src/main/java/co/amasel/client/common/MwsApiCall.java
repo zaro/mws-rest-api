@@ -12,23 +12,20 @@ public class MwsApiCall {
     private final String servicePath;
     private final String serviceVersion;
     private final Class<? extends MwsPostDataTransformer> postDataTransformerClass;
+    private final double secondsToRefillOneRequest;
 
 
-    public MwsApiCall(String operationName, Class<? extends AmaselMwsObject> requestClass, Class<? extends AmaselMwsObject> responseClass, String servicePath, String serviceVersion) {
-        this.operationName = operationName;
-        this.requestClass = requestClass;
-        this.responseClass = responseClass;
-        this.servicePath = servicePath;
-        this.serviceVersion = serviceVersion;
-        this.postDataTransformerClass = MwsPostDataTransformer.class;
+    public MwsApiCall(String operationName, Class<? extends AmaselMwsObject> requestClass, Class<? extends AmaselMwsObject> responseClass, String servicePath, String serviceVersion, double secondsToRefillOneRequest) {
+        this(operationName, requestClass, responseClass, servicePath, serviceVersion, secondsToRefillOneRequest, MwsPostDataTransformer.class);
     }
 
-    public MwsApiCall(String operationName, Class<? extends AmaselMwsObject> requestClass, Class<? extends AmaselMwsObject> responseClass, String servicePath, String serviceVersion, Class<? extends MwsPostDataTransformer> postDataTransformerClass) {
+    public MwsApiCall(String operationName, Class<? extends AmaselMwsObject> requestClass, Class<? extends AmaselMwsObject> responseClass, String servicePath, String serviceVersion, double secondsToRefillOneRequest ,Class<? extends MwsPostDataTransformer> postDataTransformerClass) {
         this.operationName = operationName;
         this.requestClass = requestClass;
         this.responseClass = responseClass;
         this.servicePath = servicePath;
         this.serviceVersion = serviceVersion;
+        this.secondsToRefillOneRequest = secondsToRefillOneRequest;
         this.postDataTransformerClass = postDataTransformerClass;
     }
 
@@ -42,6 +39,10 @@ public class MwsApiCall {
 
     public String getOperationName() {
         return this.operationName;
+    }
+
+    public double getSecondsToRefillOneRequest() {
+        return this.secondsToRefillOneRequest;
     }
 
     public Class<? extends AmaselMwsObject> getResponseClass() {

@@ -8,11 +8,11 @@ public class MethodMap implements AmaselMethodMap {
     static HashMap<String, MwsApiCall> methodMap = new HashMap<>();
 
     
-    public static MwsApiCall GetServiceStatus = new MwsApiCall("GetServiceStatus", GetServiceStatusRequest.class, GetServiceStatusResponse.class, "/Sellers/2011-07-01", "2011-07-01");
+    public static MwsApiCall GetServiceStatus = new MwsApiCall("GetServiceStatus", GetServiceStatusRequest.class, GetServiceStatusResponse.class, "/Sellers/2011-07-01", "2011-07-01", 300);
     
-    public static MwsApiCall ListMarketplaceParticipationsByNextToken = new MwsApiCall("ListMarketplaceParticipationsByNextToken", ListMarketplaceParticipationsByNextTokenRequest.class, ListMarketplaceParticipationsByNextTokenResponse.class, "/Sellers/2011-07-01", "2011-07-01");
+    public static MwsApiCall ListMarketplaceParticipationsByNextToken = new MwsApiCall("ListMarketplaceParticipationsByNextToken", ListMarketplaceParticipationsByNextTokenRequest.class, ListMarketplaceParticipationsByNextTokenResponse.class, "/Sellers/2011-07-01", "2011-07-01", 60);
     
-    public static MwsApiCall ListMarketplaceParticipations = new MwsApiCall("ListMarketplaceParticipations", ListMarketplaceParticipationsRequest.class, ListMarketplaceParticipationsResponse.class, "/Sellers/2011-07-01", "2011-07-01");
+    public static MwsApiCall ListMarketplaceParticipations = new MwsApiCall("ListMarketplaceParticipations", ListMarketplaceParticipationsRequest.class, ListMarketplaceParticipationsResponse.class, "/Sellers/2011-07-01", "2011-07-01", 60);
     
 
     static public void init(String prefix, HashMap<String, MwsApiCall> map) {

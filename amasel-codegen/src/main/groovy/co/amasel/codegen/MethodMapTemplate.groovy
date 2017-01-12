@@ -21,9 +21,9 @@ public class MethodMap implements AmaselMethodMap {
     <%  apiMethods.each { p -> 
         if (p.postDataTransformer) {
     %>
-    public static MwsApiCall <%= p.methodName %> = new MwsApiCall("<%= p.methodName %>", <%= p.methodName %>Request.class, <%= p.methodName %>Response.class, "<%= servicePath %>", "<%= serviceVersion %>", <%= p.postDataTransformer %>.class);
+    public static MwsApiCall <%= p.methodName %> = new MwsApiCall("<%= p.methodName %>", <%= p.methodName %>Request.class, <%= p.methodName %>Response.class, "<%= servicePath %>", "<%= serviceVersion %>", <%= refillRates[p.methodName] %>, <%= p.postDataTransformer %>.class);
     <%  } else {%>
-    public static MwsApiCall <%= p.methodName %> = new MwsApiCall("<%= p.methodName %>", <%= p.methodName %>Request.class, <%= p.methodName %>Response.class, "<%= servicePath %>", "<%= serviceVersion %>");
+    public static MwsApiCall <%= p.methodName %> = new MwsApiCall("<%= p.methodName %>", <%= p.methodName %>Request.class, <%= p.methodName %>Response.class, "<%= servicePath %>", "<%= serviceVersion %>", <%= refillRates[p.methodName] %>);
     <% 
         } 
      }

@@ -8,17 +8,17 @@ public class MethodMap implements AmaselMethodMap {
     static HashMap<String, MwsApiCall> methodMap = new HashMap<>();
 
     
-    public static MwsApiCall CancelFeedSubmissions = new MwsApiCall("CancelFeedSubmissions", CancelFeedSubmissionsRequest.class, CancelFeedSubmissionsResponse.class, "/", "2009-01-01");
+    public static MwsApiCall CancelFeedSubmissions = new MwsApiCall("CancelFeedSubmissions", CancelFeedSubmissionsRequest.class, CancelFeedSubmissionsResponse.class, "/", "2009-01-01", 45);
     
-    public static MwsApiCall GetFeedSubmissionCount = new MwsApiCall("GetFeedSubmissionCount", GetFeedSubmissionCountRequest.class, GetFeedSubmissionCountResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetFeedSubmissionCount = new MwsApiCall("GetFeedSubmissionCount", GetFeedSubmissionCountRequest.class, GetFeedSubmissionCountResponse.class, "/", "2009-01-01", 45);
     
-    public static MwsApiCall GetFeedSubmissionListByNextToken = new MwsApiCall("GetFeedSubmissionListByNextToken", GetFeedSubmissionListByNextTokenRequest.class, GetFeedSubmissionListByNextTokenResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetFeedSubmissionListByNextToken = new MwsApiCall("GetFeedSubmissionListByNextToken", GetFeedSubmissionListByNextTokenRequest.class, GetFeedSubmissionListByNextTokenResponse.class, "/", "2009-01-01", 2);
     
-    public static MwsApiCall GetFeedSubmissionList = new MwsApiCall("GetFeedSubmissionList", GetFeedSubmissionListRequest.class, GetFeedSubmissionListResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetFeedSubmissionList = new MwsApiCall("GetFeedSubmissionList", GetFeedSubmissionListRequest.class, GetFeedSubmissionListResponse.class, "/", "2009-01-01", 45);
     
-    public static MwsApiCall GetFeedSubmissionResult = new MwsApiCall("GetFeedSubmissionResult", GetFeedSubmissionResultRequest.class, GetFeedSubmissionResultResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetFeedSubmissionResult = new MwsApiCall("GetFeedSubmissionResult", GetFeedSubmissionResultRequest.class, GetFeedSubmissionResultResponse.class, "/", "2009-01-01", 60);
     
-    public static MwsApiCall SubmitFeed = new MwsApiCall("SubmitFeed", SubmitFeedRequest.class, SubmitFeedResponse.class, "/", "2009-01-01", MwsXmlFeedPostDataTransformer.class);
+    public static MwsApiCall SubmitFeed = new MwsApiCall("SubmitFeed", SubmitFeedRequest.class, SubmitFeedResponse.class, "/", "2009-01-01", 120, MwsXmlFeedPostDataTransformer.class);
     
 
     static public void init(String prefix, HashMap<String, MwsApiCall> map) {

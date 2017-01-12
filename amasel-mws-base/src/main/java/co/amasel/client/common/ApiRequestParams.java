@@ -24,6 +24,7 @@ public class ApiRequestParams {
     public String awsSecretKey;
     public String endPoint;
     public String userAgent;
+    public int retries;
 
     public boolean getJsonBoolean(String key, boolean defaultValue) throws AmaselClientException {
         if(postedParams == null || !postedParams.containsKey(key)){
@@ -50,6 +51,31 @@ public class ApiRequestParams {
             return true;
         }
     }
+
+    public long getJsonLong(String key, long defaultValue) throws AmaselClientException{
+        if(postedParams == null || !postedParams.containsKey(key)){
+            return defaultValue;
+        }
+        try {
+            return postedParams.getLong(key);
+        } catch( ClassCastException e) {
+            throw  new AmaselClientException("Invalid value for parameter '"+key+"' : "+ postedParams.getValue(key).toString() );
+        }
+    }
+
+    public long getQueryLong(String key, long defaultValue) throws AmaselClientException{
+        if(queryParams == null || !queryParams.contains(key)){
+            return defaultValue;
+        }
+        List<String> values  = queryParams.getAll(key);
+        String value = values.get(values.size()-1);
+        try {
+            return Long.valueOf(value);
+        } catch( NumberFormatException e) {
+            throw  new AmaselClientException("Invalid value for parameter '"+key+"' : "+ value );
+        }
+    }
+
 
     public String getJsonString(String key, String defaultValue) throws AmaselClientException{
         if(postedParams == null || !postedParams.containsKey(key)){
@@ -83,6 +109,10 @@ public class ApiRequestParams {
         return getQueryBoolean(key, getJsonBoolean("_" + key, defaultValue));
     }
 
+    public long getLong(String key, long defaultValue) throws AmaselClientException {
+        return getQueryLong(key, getJsonLong("_" + key, defaultValue));
+    }
+
     public String getString(String key, String defaultValue) throws AmaselClientException {
         return getQueryString(key, getJsonString("_" + key, defaultValue));
     }
@@ -102,6 +132,7 @@ public class ApiRequestParams {
         awsSecretKey = getString("awsSecretKey", null);
         endPoint = getString("endPoint", "uk");
         userAgent = getString("userAgent", null);
+        retries = (int)getLong("retries", 3 );
     }
 
 }

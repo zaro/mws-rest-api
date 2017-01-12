@@ -8,13 +8,13 @@ public class MethodMap implements AmaselMethodMap {
     static HashMap<String, MwsApiCall> methodMap = new HashMap<>();
 
     
-    public static MwsApiCall GetLastUpdatedTimeForRecommendations = new MwsApiCall("GetLastUpdatedTimeForRecommendations", GetLastUpdatedTimeForRecommendationsRequest.class, GetLastUpdatedTimeForRecommendationsResponse.class, "/Recommendations/2013-04-01", "2013-04-01");
+    public static MwsApiCall GetLastUpdatedTimeForRecommendations = new MwsApiCall("GetLastUpdatedTimeForRecommendations", GetLastUpdatedTimeForRecommendationsRequest.class, GetLastUpdatedTimeForRecommendationsResponse.class, "/Recommendations/2013-04-01", "2013-04-01", 2);
     
-    public static MwsApiCall GetServiceStatus = new MwsApiCall("GetServiceStatus", GetServiceStatusRequest.class, GetServiceStatusResponse.class, "/Recommendations/2013-04-01", "2013-04-01");
+    public static MwsApiCall GetServiceStatus = new MwsApiCall("GetServiceStatus", GetServiceStatusRequest.class, GetServiceStatusResponse.class, "/Recommendations/2013-04-01", "2013-04-01", 300);
     
-    public static MwsApiCall ListRecommendationsByNextToken = new MwsApiCall("ListRecommendationsByNextToken", ListRecommendationsByNextTokenRequest.class, ListRecommendationsByNextTokenResponse.class, "/Recommendations/2013-04-01", "2013-04-01");
+    public static MwsApiCall ListRecommendationsByNextToken = new MwsApiCall("ListRecommendationsByNextToken", ListRecommendationsByNextTokenRequest.class, ListRecommendationsByNextTokenResponse.class, "/Recommendations/2013-04-01", "2013-04-01", 2);
     
-    public static MwsApiCall ListRecommendations = new MwsApiCall("ListRecommendations", ListRecommendationsRequest.class, ListRecommendationsResponse.class, "/Recommendations/2013-04-01", "2013-04-01");
+    public static MwsApiCall ListRecommendations = new MwsApiCall("ListRecommendations", ListRecommendationsRequest.class, ListRecommendationsResponse.class, "/Recommendations/2013-04-01", "2013-04-01", 2);
     
 
     static public void init(String prefix, HashMap<String, MwsApiCall> map) {

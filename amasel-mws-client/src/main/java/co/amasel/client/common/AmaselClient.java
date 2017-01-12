@@ -36,11 +36,16 @@ import java.util.*;
  */
 public class AmaselClient extends AmaselClientBase {
     public Vertx vertx;
+    protected int numRetries = 0;
 
     public static AmaselClient fromVertxInstance(Vertx vertx) {
         AmaselClient c = new AmaselClient();
         c.vertx = vertx;
         return  c;
+    }
+
+    public void setNumberOfReties(int numRetries) {
+        this.numRetries = numRetries;
     }
 
     protected class AmaselClientRequest {
@@ -71,7 +76,8 @@ public class AmaselClient extends AmaselClientBase {
             uri = endPoint + apiCallDescription.getServicePath();
             this.credentials = credentials;
             this.numberOfRetries = numberOfRetries;
-            this.retryDelayMs = 1000;
+            // set retryDelayMs based on quota refill rate + extra 200ms
+            this.retryDelayMs = (int)(200.0 + apiCallDescription.getSecondsToRefillOneRequest() * 1000);
             this.postData = postData != null ? postData : new MwsPostDataTransformer();
         }
 
@@ -141,7 +147,7 @@ public class AmaselClient extends AmaselClientBase {
             } else {
                 numberOfRetries--;
             }
-            logger.info("Retry request.");
+            logger.info(String.format("Retry request in %d, reties left %d.", retryDelayMs, numberOfRetries));
             vertx.setTimer(retryDelayMs, id->{
                 try {
                     makeRequest();
@@ -260,7 +266,7 @@ public class AmaselClient extends AmaselClientBase {
         if(apiCallDescription == null){
             throw new AmaselClientException("Invalid method description: null");
         }
-        new AmaselClientRequest(apiCallDescription, requestObject,result, endPoint,credentials, null,  3).makeRequest();
+        new AmaselClientRequest(apiCallDescription, requestObject,result, endPoint,credentials, null,  this.numRetries).makeRequest();
         return result;
     }
 
@@ -274,7 +280,7 @@ public class AmaselClient extends AmaselClientBase {
         MwsPostDataTransformer postData = apiCallDescription.makePostDataTransformer();
         postData.init(requestObject);
 
-        new AmaselClientRequest(apiCallDescription, request,result, endPoint,credentials, postData, 3).makeRequest();
+        new AmaselClientRequest(apiCallDescription, request,result, endPoint,credentials, postData, this.numRetries).makeRequest();
         return result;
     }
 

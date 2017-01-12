@@ -123,6 +123,7 @@ public class MwsAsyncHandler<AmaselClientClass extends AmaselClient> extends Abs
                 if(params.userAgent != null){
                     client.setUserAgent(params.userAgent);
                 }
+                client.setNumberOfReties(params.retries);
 
                 String serviceURL = AmazonMwsEndpoint.get(params.endPoint);
 

@@ -115,30 +115,88 @@ class Codegen {
                         postDataTransformers: [
                                 "SubmitFeed" : "MwsXmlFeedPostDataTransformer",
                         ],
+                        requestRefillRates: [
+                                SubmitFeed:  120,
+                                GetFeedSubmissionList: 45,
+                                GetFeedSubmissionListByNextToken: 2,
+                                GetFeedSubmissionCount: 45,
+                                CancelFeedSubmissions: 45,
+                                GetFeedSubmissionResult: 60,
+                                RequestReport: 60,
+                                GetReportRequestList: 45,
+                                GetReportRequestListByNextToken: 2,
+                                GetReportRequestCount: 45,
+                                CancelReportRequests: 45,
+                                GetReportList: 60,
+                                GetReportListByNextToken: 2,
+                                GetReportCount: 45,
+                                GetReport: 60,
+                                ManageReportSchedule: 45,
+                                GetReportScheduleList: 45,
+                                GetReportScheduleListByNextToken: 2,
+                                GetReportScheduleCount: 45,
+                                UpdateReportAcknowledgements: 45,
+                        ],
                 ],
                 'amazon-mws-products'     : [
                          model      : "com.amazonservices.mws.products.model",
                          outputModel: "products",
                          configClass: "com.amazonservices.mws.products.MarketplaceWebServiceProductsConfig",
                          srcDir     : "amazon-mws-products/src/",
-                 ],
-                 'amazon-mws-orders'       : [
+                         requestRefillRates: [
+                                 ListMatchingProducts: 5,
+                                 GetMatchingProduct: 0.5,
+                                 GetMatchingProductForId: 0.2,
+                                 GetCompetitivePricingForSKU: 0.1,
+                                 GetCompetitivePricingForASIN: 0.1,
+                                 GetLowestOfferListingsForSKU: 0.1,
+                                 GetLowestOfferListingsForASIN: 0.1,
+                                 GetLowestPricedOffersForSKU: 0.2,
+                                 GetLowestPricedOffersForASIN: 0.2,
+                                 GetMyFeesEstimate: 0.1,
+                                 GetMyPriceForSKU: 0.1,
+                                 GetMyPriceForASIN: 0.1,
+                                 GetProductCategoriesForSKU: 5,
+                                 GetProductCategoriesForASIN: 5,
+                                 GetServiceStatus: 300,
+                         ]
+                ],
+                'amazon-mws-orders'       : [
                          model      : "com.amazonservices.mws.orders._2013_09_01.model",
                          outputModel: "orders",
                          configClass: "com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersConfig",
                          srcDir     : "amazon-mws-orders/src/",
+                         requestRefillRates: [
+                                 ListOrders: 60,
+                                 ListOrdersByNextToken: 60,
+                                 GetOrder: 60,
+                                 ListOrderItems: 2,
+                                 ListOrderItemsByNextToken: 2,
+                                 GetServiceStatus: 300,
+                         ]
                  ],
                  "amazon-mws-sellers"      : [
                          model      : "com.amazonservices.mws.sellers.model",
                          outputModel: "sellers",
                          configClass: "com.amazonservices.mws.sellers.MarketplaceWebServiceSellersConfig",
                          srcDir     : "amazon-mws-sellers/src/",
+                         requestRefillRates: [
+                                 ListMarketplaceParticipations: 60,
+                                 ListMarketplaceParticipationsByNextToken: 60,
+                                 GetServiceStatus: 300,
+                         ]
                  ],
                 "amazon-mws-recommendations" : [
                         model      : "com.amazon.mws.recommendations.model",
                         outputModel: "recommendations",
                         configClass: "com.amazon.mws.recommendations.MWSRecommendationsSectionServiceConfig",
                         srcDir     : "amazon-mws-recommendations/src/",
+                        requestRefillRates : [
+                                GetLastUpdatedTimeForRecommendations: 2,
+                                ListRecommendations: 2,
+                                ListRecommendationsByNextToken: 2,
+                                GetServiceStatus: 300,
+                        ]
                 ],
         ]
         for (url in ClassEnumerator.getClassPath()) {
@@ -320,7 +378,8 @@ class Codegen {
                                 packageName      : 'co.amasel.client.' + clientModelName,
                                 modelPackage     : 'co.amasel.model.' + clientModelName + '.*',
                                 sourcePackageName: sourcePackageName,
-                                apiMethods       : apiMethods
+                                apiMethods       : apiMethods,
+                                refillRates      : pack.value.requestRefillRates,
                         ] << getPackageConfig(pack.value.configClass))
                         out.write(t.bytes)
                         out.close()

@@ -8,33 +8,33 @@ public class MethodMap implements AmaselMethodMap {
     static HashMap<String, MwsApiCall> methodMap = new HashMap<>();
 
     
-    public static MwsApiCall CancelReportRequests = new MwsApiCall("CancelReportRequests", CancelReportRequestsRequest.class, CancelReportRequestsResponse.class, "/", "2009-01-01");
+    public static MwsApiCall CancelReportRequests = new MwsApiCall("CancelReportRequests", CancelReportRequestsRequest.class, CancelReportRequestsResponse.class, "/", "2009-01-01", 45);
     
-    public static MwsApiCall GetReportCount = new MwsApiCall("GetReportCount", GetReportCountRequest.class, GetReportCountResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetReportCount = new MwsApiCall("GetReportCount", GetReportCountRequest.class, GetReportCountResponse.class, "/", "2009-01-01", 45);
     
-    public static MwsApiCall GetReportListByNextToken = new MwsApiCall("GetReportListByNextToken", GetReportListByNextTokenRequest.class, GetReportListByNextTokenResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetReportListByNextToken = new MwsApiCall("GetReportListByNextToken", GetReportListByNextTokenRequest.class, GetReportListByNextTokenResponse.class, "/", "2009-01-01", 2);
     
-    public static MwsApiCall GetReportList = new MwsApiCall("GetReportList", GetReportListRequest.class, GetReportListResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetReportList = new MwsApiCall("GetReportList", GetReportListRequest.class, GetReportListResponse.class, "/", "2009-01-01", 60);
     
-    public static MwsApiCall GetReport = new MwsApiCall("GetReport", GetReportRequest.class, GetReportResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetReport = new MwsApiCall("GetReport", GetReportRequest.class, GetReportResponse.class, "/", "2009-01-01", 60);
     
-    public static MwsApiCall GetReportRequestCount = new MwsApiCall("GetReportRequestCount", GetReportRequestCountRequest.class, GetReportRequestCountResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetReportRequestCount = new MwsApiCall("GetReportRequestCount", GetReportRequestCountRequest.class, GetReportRequestCountResponse.class, "/", "2009-01-01", 45);
     
-    public static MwsApiCall GetReportRequestListByNextToken = new MwsApiCall("GetReportRequestListByNextToken", GetReportRequestListByNextTokenRequest.class, GetReportRequestListByNextTokenResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetReportRequestListByNextToken = new MwsApiCall("GetReportRequestListByNextToken", GetReportRequestListByNextTokenRequest.class, GetReportRequestListByNextTokenResponse.class, "/", "2009-01-01", 2);
     
-    public static MwsApiCall GetReportRequestList = new MwsApiCall("GetReportRequestList", GetReportRequestListRequest.class, GetReportRequestListResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetReportRequestList = new MwsApiCall("GetReportRequestList", GetReportRequestListRequest.class, GetReportRequestListResponse.class, "/", "2009-01-01", 45);
     
-    public static MwsApiCall GetReportScheduleCount = new MwsApiCall("GetReportScheduleCount", GetReportScheduleCountRequest.class, GetReportScheduleCountResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetReportScheduleCount = new MwsApiCall("GetReportScheduleCount", GetReportScheduleCountRequest.class, GetReportScheduleCountResponse.class, "/", "2009-01-01", 45);
     
-    public static MwsApiCall GetReportScheduleListByNextToken = new MwsApiCall("GetReportScheduleListByNextToken", GetReportScheduleListByNextTokenRequest.class, GetReportScheduleListByNextTokenResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetReportScheduleListByNextToken = new MwsApiCall("GetReportScheduleListByNextToken", GetReportScheduleListByNextTokenRequest.class, GetReportScheduleListByNextTokenResponse.class, "/", "2009-01-01", 2);
     
-    public static MwsApiCall GetReportScheduleList = new MwsApiCall("GetReportScheduleList", GetReportScheduleListRequest.class, GetReportScheduleListResponse.class, "/", "2009-01-01");
+    public static MwsApiCall GetReportScheduleList = new MwsApiCall("GetReportScheduleList", GetReportScheduleListRequest.class, GetReportScheduleListResponse.class, "/", "2009-01-01", 45);
     
-    public static MwsApiCall ManageReportSchedule = new MwsApiCall("ManageReportSchedule", ManageReportScheduleRequest.class, ManageReportScheduleResponse.class, "/", "2009-01-01");
+    public static MwsApiCall ManageReportSchedule = new MwsApiCall("ManageReportSchedule", ManageReportScheduleRequest.class, ManageReportScheduleResponse.class, "/", "2009-01-01", 45);
     
-    public static MwsApiCall RequestReport = new MwsApiCall("RequestReport", RequestReportRequest.class, RequestReportResponse.class, "/", "2009-01-01");
+    public static MwsApiCall RequestReport = new MwsApiCall("RequestReport", RequestReportRequest.class, RequestReportResponse.class, "/", "2009-01-01", 60);
     
-    public static MwsApiCall UpdateReportAcknowledgements = new MwsApiCall("UpdateReportAcknowledgements", UpdateReportAcknowledgementsRequest.class, UpdateReportAcknowledgementsResponse.class, "/", "2009-01-01");
+    public static MwsApiCall UpdateReportAcknowledgements = new MwsApiCall("UpdateReportAcknowledgements", UpdateReportAcknowledgementsRequest.class, UpdateReportAcknowledgementsResponse.class, "/", "2009-01-01", 45);
     
 
     static public void init(String prefix, HashMap<String, MwsApiCall> map) {
