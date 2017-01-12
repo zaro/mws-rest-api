@@ -1,6 +1,7 @@
 .DS_Store
 .gradle
 .idea/
+.vertx
 build/
 db/
 mws-libs-from-amazon/sources/
