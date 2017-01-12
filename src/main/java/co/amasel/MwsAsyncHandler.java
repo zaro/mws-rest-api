@@ -109,26 +109,26 @@ public class MwsAsyncHandler<AmaselClientClass extends AmaselClient> extends Abs
                     sendError(routingContext, defaults.cause());
                     return;
                 }
-                JsonObject jsonRequest = defaults.result();
-                final ApiRequestParams params;
                 try {
-                    params = new ApiRequestParams(requestParams, jsonRequest);
-                } catch (ApiRequestException e) {
-                    sendError(routingContext, e);
-                    return;
-                }
+                    JsonObject jsonRequest = defaults.result();
+                    final ApiRequestParams params;
+                    try {
+                        params = new ApiRequestParams(requestParams, jsonRequest);
+                    } catch (ApiRequestException e) {
+                        sendError(routingContext, e);
+                        return;
+                    }
 
-                AmazonCredentials cred  = new AmazonCredentials( params.awsAccessKey, params.awsSecretKey);
+                    AmazonCredentials cred  = new AmazonCredentials( params.awsAccessKey, params.awsSecretKey);
 
-                if(params.userAgent != null){
-                    client.setUserAgent(params.userAgent);
-                }
-                client.setNumberOfReties(params.retries);
+                    if(params.userAgent != null){
+                        client.setUserAgent(params.userAgent);
+                    }
+                    client.setNumberOfReties(params.retries);
 
-                String serviceURL = AmazonMwsEndpoint.get(params.endPoint);
+                    String serviceURL = AmazonMwsEndpoint.get(params.endPoint);
 
-                long startTime = System.currentTimeMillis();
-                try {
+                    long startTime = System.currentTimeMillis();
                     client.invoke(apiCall,jsonRequest, serviceURL, cred).setHandler(asyncResponse -> {
                         long stopTime = System.currentTimeMillis();
                         long elapsedTime = stopTime - startTime;
