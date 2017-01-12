@@ -133,6 +133,10 @@ public class ApiRequestParams {
         endPoint = getString("endPoint", "uk");
         userAgent = getString("userAgent", null);
         retries = (int)getLong("retries", 3 );
+
+        if ( retries < 0 ){
+            throw  new AmaselClientException("Invalid value for parameter 'retries' : " + String.valueOf(retries) );
+        }
     }
 
 }

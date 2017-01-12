@@ -135,7 +135,7 @@ public class AmaselClient extends AmaselClientBase {
         }
 
         public boolean retryRequest(AmaselMwsException.XmlMwsException xmlException){
-            if(numberOfRetries == 0){
+            if(numberOfRetries <= 0){
                 return false;
             }
             if(xmlException != null){
