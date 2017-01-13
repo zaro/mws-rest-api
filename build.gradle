@@ -54,19 +54,29 @@ dependencies {
 
 mainClassName = 'MwsRestApiMain'
 
-run  {
-    systemProperties['vertx.logger-delegate-factory-class-name'] = 'io.vertx.core.logging.SLF4JLogDelegateFactory'
+tasks.withType(JavaExec)  {
+    systemProperties([
+            'mwsRestApi.prefix'                        : './',
+            'vertx.logger-delegate-factory-class-name': 'io.vertx.core.logging.SLF4JLogDelegateFactory'
+    ])
+
 }
 
-
 applicationDefaultJvmArgs = [
-        "-DmwsRestApi.prefix=MWS_REST_API_HOME/",
+       "-DmwsRestApi.prefix=MWS_REST_API_HOME",
         "-Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory",
 ]
 
+task argsOverride << {
+    applicationDefaultJvmArgs = []
+}
+
+tasks.run.dependsOn argsOverride
+
+
 startScripts {
     doLast {
-        unixScript.text = unixScript.text.replace('MWS_REST_API_HOME', '\$APP_HOME')
+        unixScript.text = unixScript.text.replace('MWS_REST_API_HOME', '\$APP_HOME/')
         windowsScript.text = windowsScript.text.replace('MWS_REST_API_HOME', '%~dp0..')
     }
 }

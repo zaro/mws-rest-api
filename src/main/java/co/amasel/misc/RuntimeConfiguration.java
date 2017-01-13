@@ -23,7 +23,7 @@ public class RuntimeConfiguration {
     }
     static String getAppDirImpl(){
         String dir = System.getProperty("mwsRestApi.prefix");
-        if(dir != null){
+        if(dir != null && !dir.equals("MWS_REST_API_HOME")){
             return dir;
         }
         File currentJar = null;

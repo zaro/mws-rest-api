@@ -135,7 +135,7 @@ public class ApiRequestParams {
         retries = (int)getLong("retries", 3 );
 
         if ( retries < 0 ){
-            throw  new AmaselClientException("Invalid value for parameter 'retries' : " + String.valueOf(retries) );
+            throw  new AmaselClientException("Invalid value for parameter 'retries' : "+ String.valueOf(retries) );
         }
     }
 
