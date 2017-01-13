@@ -7,5 +7,12 @@
 #    "keyPath"  : "certbot/live/foggly-backup.ftp.sh/privkey.pem",
 #    "certPath" : "certbot/live/foggly-backup.ftp.sh/fullchain.pem"
   },
-  "port" : 8181
+  "port" : 8181,
+# "admins" is object of user to pass mapping where
+#   pass can be either sha256 hex of the password ( generate with: echo -n pass | shasum -a 256 )
+#   or true, which means no password is required
+  "admins" : {
+    "user" : "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1",
+    "admin" : true
+  }
 }

@@ -27,7 +27,7 @@ dependencies {
     compile "io.vertx:vertx-lang-js:$vertxVersion"
     compile "io.vertx:vertx-web:$vertxVersion"
     compile "io.vertx:vertx-jdbc-client:$vertxVersion"
-    compile "io.vertx:vertx-rx-java:$vertxVersion"
+    compile "io.vertx:vertx-auth-common:$vertxVersion"
     compile "io.vertx:vertx-unit:$vertxVersion"
     compile "org.apache.httpcomponents:httpclient:4.2.3"
 //    compile "org.codehaus.woodstox:woodstox-core-asl:4.4.1"
@@ -54,25 +54,19 @@ dependencies {
 
 mainClassName = 'MwsRestApiMain'
 
+
+applicationDefaultJvmArgs = [
+       "-DmwsRestApi.prefix=MWS_REST_API_HOME",
+       "-Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory",
+]
+
 tasks.withType(JavaExec)  {
     systemProperties([
             'mwsRestApi.prefix'                        : './',
             'vertx.logger-delegate-factory-class-name': 'io.vertx.core.logging.SLF4JLogDelegateFactory'
     ])
-
-}
-
-applicationDefaultJvmArgs = [
-       "-DmwsRestApi.prefix=MWS_REST_API_HOME",
-        "-Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory",
-]
-
-task argsOverride << {
     applicationDefaultJvmArgs = []
 }
-
-tasks.run.dependsOn argsOverride
-
 
 startScripts {
     doLast {

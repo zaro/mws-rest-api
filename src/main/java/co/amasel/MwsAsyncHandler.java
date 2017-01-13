@@ -116,7 +116,7 @@ public class MwsAsyncHandler<AmaselClientClass extends AmaselClient> extends Abs
                 sendError(routingContext, e);
                 return;
             }
-            Future<JsonObject> jsonRequestFuture = PresetDb.getAsDefaults(preset, jsonRequestNoDef);
+            Future<JsonObject> jsonRequestFuture = PresetDb.getAsDefaults(routingContext.user(), preset, jsonRequestNoDef);
             jsonRequestFuture.setHandler( defaults-> {
                 if(defaults.failed()){
                     sendError(routingContext, defaults.cause());
@@ -145,8 +145,8 @@ public class MwsAsyncHandler<AmaselClientClass extends AmaselClient> extends Abs
                     client.invoke(apiCall,jsonRequest, serviceURL, cred).setHandler(asyncResponse -> {
                         long stopTime = System.currentTimeMillis();
                         long elapsedTime = stopTime - startTime;
-                        System.out.print("TIME TO HANDLER:");
-                        System.out.println(elapsedTime);
+//                        System.out.print("TIME TO HANDLER:");
+//                        System.out.println(elapsedTime);
                         if( asyncResponse.failed() ){
                             sendError(routingContext, asyncResponse.cause() );
                             return;

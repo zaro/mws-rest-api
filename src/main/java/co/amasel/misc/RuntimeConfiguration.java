@@ -1,5 +1,6 @@
 package co.amasel.misc;
 
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 import java.io.File;
@@ -130,5 +131,14 @@ public class RuntimeConfiguration {
         return "0.0.0.0";
     }
 
+    public static JsonObject getAdmins() {
+        JsonObject cfg = loadConfig();
+        if(cfg.containsKey("admins") ){
+            try {
+                return cfg.getJsonObject("admins");
+            } catch (ClassCastException e) {}
+        }
+        return new JsonObject();
+    }
 
 }

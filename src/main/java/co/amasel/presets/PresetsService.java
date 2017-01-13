@@ -36,51 +36,56 @@ public class PresetsService extends AbstractVerticle {
         restAPI.route().handler(BodyHandler.create());
         restAPI.post("/:presetName").handler(r->{
             JsonObject jsonRequest = r.getBodyAsJson();
-            Future<Boolean> dbRecord = PresetDb.put(r.request().getParam("presetName"), jsonRequest);
-            dbRecord.setHandler( preset -> {
+            String preset = r.request().getParam("presetName");
+            Future<Boolean> dbRecord = PresetDb.put(r.user(), preset, jsonRequest);
+            dbRecord.setHandler( result -> {
                 HttpServerResponse response = r.response();
                 response.putHeader("Content-Type", "application/json");
 
-                if( preset.succeeded()) {
+                if( result.succeeded()) {
                     response.end("{\"result\": true}");
                 } else {
-                    response.end(new JsonObject().put("error", preset.cause().getMessage()).encode());
+                    response.end(new JsonObject().put("error", result.cause().getMessage()).encode());
                 }
             });
         });
 
         restAPI.delete("/:presetName").handler(r->{
-            Future<Boolean> dbRecord = PresetDb.delete(r.request().getParam("presetName"));
-            dbRecord.setHandler( preset -> {
+            String preset = r.request().getParam("presetName");
+
+            Future<Boolean> dbRecord = PresetDb.delete(r.user(), preset);
+            dbRecord.setHandler( result -> {
                 HttpServerResponse response = r.response();
                 response.putHeader("Content-Type", "application/json");
 
-                if( preset.succeeded()) {
+                if( result.succeeded()) {
                     response.end("{\"result\": true}");
                 } else {
-                    response.end(new JsonObject().put("error", preset.cause().getMessage()).encode());
+                    response.end(new JsonObject().put("error", result.cause().getMessage()).encode());
                 }
             });
         });
 
         restAPI.get("/:presetName").handler(r->{
-            Future<JsonObject> dbRecord = PresetDb.get(r.request().getParam("presetName"));
-            dbRecord.setHandler( preset -> {
+            String preset = r.request().getParam("presetName");
+
+            Future<JsonObject> dbRecord = PresetDb.get(r.user(), preset);
+            dbRecord.setHandler( result -> {
                 HttpServerResponse response = r.response();
                 response.putHeader("Content-Type", "application/json");
 
-                if( preset.succeeded()) {
+                if( result.succeeded()) {
                     JsonObject responseJson = new JsonObject();
-                    responseJson.put("result", preset.result());
+                    responseJson.put("result", result.result());
                     response.end(responseJson.encode());
                 } else {
-                    response.end(new JsonObject().put("error", preset.cause().getMessage()).encode());
+                    response.end(new JsonObject().put("error", result.cause().getMessage()).encode());
                 }
             });
         });
 
         restAPI.get("/").handler(r->{
-            Future<Set<String>> presetsSet = PresetDb.listPresets();
+            Future<Set<String>> presetsSet = PresetDb.listPresets(r.user());
             presetsSet.setHandler( presets -> {
                 HttpServerResponse response = r.response();
                 response.putHeader("Content-Type", "application/json");

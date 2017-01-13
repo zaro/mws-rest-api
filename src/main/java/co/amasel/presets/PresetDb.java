@@ -1,5 +1,6 @@
 package co.amasel.presets;
 
+import io.vertx.ext.auth.User;
 import co.amasel.misc.RuntimeConfiguration;
 //import com.google.common.util.concurrent.FutureFallback;
 import io.vertx.core.AsyncResult;
@@ -12,10 +13,7 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.sql.SQLConnection;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -25,7 +23,6 @@ public class PresetDb {
     static private final Logger logger = LoggerFactory.getLogger("PresetDb");
 
     static JDBCClient client;
-
 
     static ConcurrentMap<String, String> map = null;
 
@@ -45,7 +42,10 @@ public class PresetDb {
                 return;
             }
             final SQLConnection connection = conn.result();
-            connection.execute("CREATE TABLE IF NOT EXISTS preset_config(key VARCHAR(255) PRIMARY KEY, value CLOB);", res -> {
+            final List<String> statements = Arrays.asList(
+                    "CREATE TABLE IF NOT EXISTS preset_config(user VARCHAR(255), key VARCHAR(255), value CLOB,  PRIMARY KEY(user, key));"
+            );
+            connection.batch(statements, res -> {
                 if (res.failed()) {
                     logger.error(res.cause().getMessage());
                     result.fail(res.cause().getMessage());
@@ -57,8 +57,15 @@ public class PresetDb {
         return result;
     }
 
+    static public String username(User user) {
+        return user.principal().getString("user");
+    }
 
-    static public Future<JsonObject> get(String key){
+    static public Future<JsonObject> get(User user, String key){
+        if( user == null ){
+            return Future.failedFuture("Invalid user");
+        }
+        String username = username(user);
         final Future<JsonObject> result =  Future.future();
         client.getConnection(conn -> {
             if (conn.failed()) {
@@ -68,7 +75,7 @@ public class PresetDb {
             }
             final SQLConnection connection = conn.result();
             logger.info("get('" + key + "')");
-            connection.queryWithParams("SELECT value FROM preset_config WHERE key = ?", new JsonArray().add(key), rs -> {
+            connection.queryWithParams("SELECT value FROM preset_config WHERE key = ? AND user = ?", new JsonArray().add(key).add(username), rs -> {
                 if (rs.failed()) {
                     logger.error("Cannot retrieve the data from the database: " + rs.cause().getMessage());
                     result.fail(rs.cause().getMessage());
@@ -93,9 +100,9 @@ public class PresetDb {
     }
 
 
-    static public Future<JsonObject> getAsDefaults(String key, JsonObject value){
+    static public Future<JsonObject> getAsDefaults(User user, String key, JsonObject value){
         final Future<JsonObject> result =  Future.future();
-        Future<JsonObject> presetFuture = get(key);
+        Future<JsonObject> presetFuture = get(user, key);
         presetFuture.setHandler(preset ->{
             if(preset.succeeded()){
                 if(value == null){
@@ -122,7 +129,12 @@ public class PresetDb {
         return result;
     }
 
-    static public Future<Boolean> put(String key, JsonObject value){
+    static public Future<Boolean> put(User user, String key, JsonObject value){
+        if( user == null ){
+            return Future.failedFuture("Invalid user");
+        }
+        String username = username(user);
+
         final Future<Boolean> result =  Future.future();
         client.getConnection(conn -> {
             if (conn.failed()) {
@@ -131,7 +143,11 @@ public class PresetDb {
                 return;
             }
             final SQLConnection connection = conn.result();
-            connection.execute("MERGE INTO preset_config VALUES ('" + key + "','" + value.encode() +"')", rs -> {
+            JsonArray params = new JsonArray();
+            params.add(username);
+            params.add(key);
+            params.add(value.encode());
+            connection.updateWithParams("MERGE INTO preset_config VALUES (?,?,?)", params, rs -> {
                 if (rs.failed()) {
                     logger.error("Cannot retrieve the data from the database: " + rs.cause().getMessage());
                     result.fail(rs.cause().getMessage());
@@ -151,7 +167,12 @@ public class PresetDb {
         return result;
     }
 
-    static public Future<Boolean> delete(String key){
+    static public Future<Boolean> delete(User user, String key){
+        if( user == null ){
+            return Future.failedFuture("Invalid user");
+        }
+        String username = username(user);
+
         final Future<Boolean> result =  Future.future();
         client.getConnection(conn -> {
             if (conn.failed()) {
@@ -160,7 +181,7 @@ public class PresetDb {
                 return;
             }
             final SQLConnection connection = conn.result();
-            connection.execute("DELETE FROM preset_config WHERE key = '" + key + "'", rs -> {
+            connection.updateWithParams("DELETE FROM preset_config WHERE user = ? AND key = ?", new JsonArray().add(username).add(key), rs -> {
                 if (rs.failed()) {
                     logger.error("Cannot delete the data from the database: " + rs.cause().getMessage());
                     result.fail(rs.cause().getMessage());
@@ -181,7 +202,12 @@ public class PresetDb {
 
     }
 
-    static public Future<Set<String>> listPresets() {
+    static public Future<Set<String>> listPresets(User user) {
+        if( user == null ){
+            return Future.failedFuture("Invalid user");
+        }
+        String username = username(user);
+
         final Future<Set<String>> result = Future.future();
         client.getConnection(conn -> {
             if (conn.failed()) {
@@ -190,7 +216,7 @@ public class PresetDb {
                 return;
             }
             final SQLConnection connection = conn.result();
-            connection.query("SELECT key FROM preset_config", rs -> {
+            connection.queryWithParams("SELECT key FROM preset_config WHERE user = ?", new JsonArray().add(username), rs -> {
                 if (rs.failed()) {
                     logger.error("Cannot retrieve the data from the database: " + rs.cause().getMessage());
                     result.fail(rs.cause().getMessage());

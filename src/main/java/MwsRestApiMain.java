@@ -1,4 +1,5 @@
 import co.amasel.MwsAsyncHandler;
+import co.amasel.auth.ConfigAuthProvider;
 import co.amasel.client.common.AmaselCachedClient;
 import co.amasel.client.common.AmaselClient;
 import co.amasel.db.Db;
@@ -16,6 +17,8 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.net.PemKeyCertOptions;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.AuthHandler;
+import io.vertx.ext.web.handler.BasicAuthHandler;
 import io.vertx.ext.web.handler.LoggerHandler;
 import io.vertx.ext.web.handler.ResponseTimeHandler;
 import org.apache.commons.io.FilenameUtils;
@@ -44,8 +47,12 @@ public class MwsRestApiMain {
 
         Db.start();
         PresetDb.init(vertx, "presets.db");
+        AuthHandler basicAuthHandler = BasicAuthHandler.create(new ConfigAuthProvider(), "mws-rest-api");
+        Router mainRouter = Router.router(vertx);
 
-        PluginShared.setMainRouter( Router.router(vertx) );
+        mainRouter.route().handler(basicAuthHandler);
+        PluginShared.setMainRouter( mainRouter );
+
         DeploymentOptions deploymentOptions = new DeploymentOptions();
 
         //vertx.deployVerticle(new MwsTest(), new DeploymentOptions());
