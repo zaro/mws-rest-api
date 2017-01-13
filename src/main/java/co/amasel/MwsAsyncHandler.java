@@ -99,7 +99,19 @@ public class MwsAsyncHandler<AmaselClientClass extends AmaselClient> extends Abs
             MultiMap requestParams = routingContext.request().params();
             String preset = null;
             try {
-                preset = ApiRequestParams.getQueryString(requestParams, "preset", "default");
+                // Check fro preset in Query parameters
+                preset = ApiRequestParams.getQueryString(requestParams, "preset", null);
+                // If not found, check the json request
+                if (preset == null && jsonRequestNoDef.containsKey("_preset")) {
+                    Object v = jsonRequestNoDef.getValue("_preset");
+                    if( v != null ) {
+                        preset = String.valueOf( v );
+                    }
+                }
+                // If no preset in json request, just use "default"
+                if (preset == null) {
+                    preset = "default";
+                }
             } catch (ApiRequestException e) {
                 sendError(routingContext, e);
                 return;
