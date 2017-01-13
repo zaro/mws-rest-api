@@ -49,6 +49,20 @@ public class PresetsService extends AbstractVerticle {
             });
         });
 
+        restAPI.delete("/:presetName").handler(r->{
+            Future<Boolean> dbRecord = PresetDb.delete(r.request().getParam("presetName"));
+            dbRecord.setHandler( preset -> {
+                HttpServerResponse response = r.response();
+                response.putHeader("Content-Type", "application/json");
+
+                if( preset.succeeded()) {
+                    response.end("{\"result\": true}");
+                } else {
+                    response.end(new JsonObject().put("error", preset.cause().getMessage()).encode());
+                }
+            });
+        });
+
         restAPI.get("/:presetName").handler(r->{
             Future<JsonObject> dbRecord = PresetDb.get(r.request().getParam("presetName"));
             dbRecord.setHandler( preset -> {

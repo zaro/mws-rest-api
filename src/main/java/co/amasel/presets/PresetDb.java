@@ -149,6 +149,35 @@ public class PresetDb {
         });
 
         return result;
+    }
+
+    static public Future<Boolean> delete(String key){
+        final Future<Boolean> result =  Future.future();
+        client.getConnection(conn -> {
+            if (conn.failed()) {
+                logger.error(conn.cause().getMessage());
+                result.fail(conn.cause().getMessage());
+                return;
+            }
+            final SQLConnection connection = conn.result();
+            connection.execute("DELETE FROM preset_config WHERE key = '" + key + "'", rs -> {
+                if (rs.failed()) {
+                    logger.error("Cannot delete the data from the database: " + rs.cause().getMessage());
+                    result.fail(rs.cause().getMessage());
+                    return;
+                }
+
+                result.complete(true);
+                // and close the connection
+                connection.close(done -> {
+                    if (done.failed()) {
+                        logger.error("Cannot close connection to the database: " + rs.cause().getMessage());
+                    }
+                });
+            });
+        });
+
+        return result;
 
     }
 
