@@ -17,6 +17,7 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.LoggerFormat;
 import io.vertx.ext.web.handler.LoggerHandler;
 import io.vertx.ext.web.handler.ResponseTimeHandler;
 
@@ -211,7 +212,7 @@ public class MwsAsyncHandler<AmaselClientClass extends AmaselClient> extends Abs
 
         Router restAPI = Router.router(vertx);
 
-        restAPI.route().handler(LoggerHandler.create());
+        restAPI.route().handler(LoggerHandler.create(LoggerFormat.TINY));
         restAPI.route().handler(ResponseTimeHandler.create());
 
         restAPI.route().handler(BodyHandler.create());

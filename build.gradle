@@ -40,7 +40,12 @@ dependencies {
     // https://mvnrepository.com/artifact/com.h2database/h2
     compile group: 'com.h2database', name: 'h2', version: '1.4.192'
     //
-    compile 'org.elasticsearch.distribution.test:elasticsearch:2.3.3'
+    // compile 'org.elasticsearch.distribution.test:elasticsearch:2.3.3'
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.22'
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
+
     compile project('amasel-mws-base')
     compile project('amasel-mws-lib')
     compile project('amasel-mws-client')
@@ -49,8 +54,15 @@ dependencies {
 
 mainClassName = 'MwsRestApiMain'
 
+run  {
+    systemProperties['vertx.logger-delegate-factory-class-name'] = 'io.vertx.core.logging.SLF4JLogDelegateFactory'
+}
 
-applicationDefaultJvmArgs = ["-DmwsRestApi.prefix=MWS_REST_API_HOME/"]
+
+applicationDefaultJvmArgs = [
+        "-DmwsRestApi.prefix=MWS_REST_API_HOME/",
+        "-Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory",
+]
 
 startScripts {
     doLast {

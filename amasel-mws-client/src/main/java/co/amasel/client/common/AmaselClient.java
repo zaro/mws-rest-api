@@ -107,13 +107,15 @@ public class AmaselClient extends AmaselClientBase {
             request.putHeader("Connection", "Keep-Alive");
             if(postData.hasPostData()) {
                 request.putHeader("Content-MD5", calcMD5(postData.getPostData()));
-                request.putHeader("Content-Type",postData.getContentType() );
+                request.putHeader("Content-Type", postData.getContentType() );
             }
-            logger.info(absUrl);
-            logger.info(postData.hasPostData());
-            logger.info(postData.getPostData());
-            logger.info(r.getRequestBody());
-
+            logger.info(clientIdString() + " POST " + absUrl );
+            if (postData.hasPostData() && logger.isDebugEnabled()) {
+                String lines[] = postData.getPostData().split("\\r?\\n");
+                for(String line: lines){
+                    logger.debug(clientIdString() + " POSTDATA: " + line);
+                }
+            }
             try {
                 if(postData.hasPostData()) {
                     request.end(postData.getPostData());
@@ -130,7 +132,7 @@ public class AmaselClient extends AmaselClientBase {
         }
 
         protected void failRequest(Throwable exception){
-            logger.error(exception);
+            logger.error(clientIdString(), exception);
             result.fail(exception);
         }
 
@@ -147,12 +149,12 @@ public class AmaselClient extends AmaselClientBase {
             } else {
                 numberOfRetries--;
             }
-            logger.info(String.format("Retry request in %d, reties left %d.", retryDelayMs, numberOfRetries));
+            logger.info(String.format("%s Retry request in %d, reties left %d.", clientIdString(), retryDelayMs, numberOfRetries));
             vertx.setTimer(retryDelayMs, id->{
                 try {
                     makeRequest();
                 } catch (AmaselClientException e) {
-                    logger.error("Failed to retry request" + e);
+                    logger.error(clientIdString() + " Failed to retry request" + e);
                 }
             });
             retryDelayMs = (int)(1.5 * (double)retryDelayMs);
@@ -180,11 +182,6 @@ public class AmaselClient extends AmaselClientBase {
             @Override
             public void handle(HttpClientResponse response) {
                 this.response = response;
-                long stopTime = System.currentTimeMillis();
-                long elapsedTime = stopTime - startTime;
-                //System.out.print("TIME TO REQ:");
-                //System.out.println(elapsedTime);
-                //System.out.println("> " + response.statusCode() + " " + response.statusMessage());
                 response.bodyHandler(getBodyHandler());
                 response.exceptionHandler(exception -> {
                     failRequest(exception);
@@ -192,15 +189,26 @@ public class AmaselClient extends AmaselClientBase {
 
             }
 
+            void printStatusMsg() {
+                long stopTime = System.currentTimeMillis();
+                long elapsedTime = stopTime - startTime;
+                logger.info(clientIdString() + " " +response.statusCode() + " " + response.statusMessage() + " - " + String.valueOf(elapsedTime) + "ms");
+            }
+
             class MwsCallHandler implements Handler<Buffer> {
 
                 @Override
                 public void handle(Buffer totalBuffer) {
+                    printStatusMsg();
+
                     MwsResponseHeaderMetadata meta = getResponseHeaderMetadata(response);
                     AmaselMwsObject responseObject = MwsUtl.newInstance(apiCallDescription.getResponseClass());
                     responseObject.setMwsHeaderMetadata(meta);
-                    MwsXmlReader reader = new MwsXmlReader(totalBuffer.toString());
-                    logger.info("Requst metadata:" + meta.toString());
+                    String responseString = totalBuffer.toString();
+                    MwsXmlReader reader = new MwsXmlReader(responseString);
+                    if (logger.isDebugEnabled() ) {
+                        logger.debug(clientIdString() + " RECEIVED: " + responseString);
+                    }
                     if (response.statusCode() == 200) {
                         responseObject.readFragmentFrom(reader);
                         AmaselMwsObject mwsResult = null;
@@ -211,16 +219,13 @@ public class AmaselClient extends AmaselClientBase {
                         } else {
                             mwsResult = (AmaselMwsObject) o;
                         }
-                        logger.info("COMPLETE");
                         completeRequest(new MwsApiResponse(meta, responseObject, mwsResult, mwsResultList, false, totalBuffer, response.headers()));
                     } else if (response.statusCode() >= 400) {
-                        System.out.println("WTF >=400");
                         AmaselMwsException.XmlMwsException parsed = reader.read("Error", AmaselMwsException.XmlMwsException.class);
                         if(!retryRequest(parsed)) {
                             completeRequest(new MwsApiResponse(meta, responseObject, parsed, null, false, totalBuffer, response.headers()));
                         }
                     } else {
-                        System.out.println("WTF");
                         completeRequest(new MwsApiResponse(meta, "Unknown response from Amazon MWS:" + response.statusCode() + " " + response.statusMessage()));
                     }
                 }
@@ -230,6 +235,12 @@ public class AmaselClient extends AmaselClientBase {
 
                 @Override
                 public void handle(Buffer totalBuffer) {
+                    printStatusMsg();
+
+                    if (logger.isDebugEnabled() ) {
+                        logger.debug(clientIdString() + " RECEIVED: " + totalBuffer.toString());
+                    }
+
                     MwsResponseHeaderMetadata meta = getResponseHeaderMetadata(response);
                     if (response.statusCode() == 200) {
                         String md5Hash = calcMD5(totalBuffer);
@@ -244,7 +255,6 @@ public class AmaselClient extends AmaselClientBase {
                             completeRequest(new MwsApiResponse(meta, true, totalBuffer, response.headers()));
                         }
                     } else if (response.statusCode() >= 400) {
-                        System.out.println("WTF >=400");
                         AmaselMwsObject responseObject = MwsUtl.newInstance(apiCallDescription.getResponseClass());
                         responseObject.setMwsHeaderMetadata(meta);
                         MwsXmlReader reader = new MwsXmlReader(totalBuffer.toString());
@@ -253,7 +263,6 @@ public class AmaselClient extends AmaselClientBase {
                             completeRequest(new MwsApiResponse(meta, responseObject, parsed, null, true, totalBuffer, response.headers()));
                         }
                     } else {
-                        System.out.println("WTF");
                         completeRequest(new MwsApiResponse(meta, "Unknown response from Amazon MWS:" + response.statusCode() + " " + response.statusMessage()));
                     }
                 }

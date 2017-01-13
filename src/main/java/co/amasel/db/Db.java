@@ -1,12 +1,12 @@
 package co.amasel.db;
 
 import co.amasel.misc.RuntimeConfiguration;
-import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.node.Node;
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.search.SearchHit;
+//import org.elasticsearch.action.get.GetResponse;
+//import org.elasticsearch.client.Client;
+//import org.elasticsearch.node.Node;
+//import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
+//import org.elasticsearch.common.settings.Settings;
+//import org.elasticsearch.search.SearchHit;
 
 import java.util.Map;
 import java.util.Vector;
@@ -16,8 +16,8 @@ import java.util.Vector;
  */
 public class Db {
     public static final String RECORD_TYPE = "record";
-    static protected Node server;
-    static protected Client client;
+//    static protected Node server;
+//    static protected Client client;
 
     public static void start() {
 //        final Settings.Builder builder = Settings.settingsBuilder();

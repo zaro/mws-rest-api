@@ -1,7 +1,7 @@
 package co.amasel.db;
 
-import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.search.SearchHit;
+//import org.elasticsearch.action.get.GetResponse;
+//import org.elasticsearch.search.SearchHit;
 
 import java.util.Map;
 import java.util.Vector;
@@ -31,31 +31,31 @@ public class CacheEntryList extends Vector<CacheEntry> {
         this.ceTag = ceTag;
     }
 
-    public void addGetResponse(GetResponse response) {
-        if (response == null) {
-        } else if (response.getType().equals("begin")) {
-            addBeginRecord(response.getSource());
-        } else if (response.getType().equals("end")) {
-            addEndRecord(response.getSource());
-        } else if (response.getType().equals(Db.RECORD_TYPE)) {
-            add(new CacheEntry(ceTag, response.getSource()));
-        } else {
-            throw new RuntimeException("Unknown cache record type: " + response.getType());
-        }
-    }
-
-    public void addSearchHit(SearchHit response) {
-        if (response == null) {
-        } else if (response.getType().equals("begin")) {
-            addBeginRecord(response.getSource());
-        } else if (response.getType().equals("end")) {
-            addEndRecord(response.getSource());
-        } else if (response.getType().equals(Db.RECORD_TYPE)) {
-            add(new CacheEntry(ceTag, response.getSource()));
-        } else {
-            throw new RuntimeException("Unknown cache record type: " + response.getType());
-        }
-    }
+//    public void addGetResponse(GetResponse response) {
+//        if (response == null) {
+//        } else if (response.getType().equals("begin")) {
+//            addBeginRecord(response.getSource());
+//        } else if (response.getType().equals("end")) {
+//            addEndRecord(response.getSource());
+//        } else if (response.getType().equals(Db.RECORD_TYPE)) {
+//            add(new CacheEntry(ceTag, response.getSource()));
+//        } else {
+//            throw new RuntimeException("Unknown cache record type: " + response.getType());
+//        }
+//    }
+//
+//    public void addSearchHit(SearchHit response) {
+//        if (response == null) {
+//        } else if (response.getType().equals("begin")) {
+//            addBeginRecord(response.getSource());
+//        } else if (response.getType().equals("end")) {
+//            addEndRecord(response.getSource());
+//        } else if (response.getType().equals(Db.RECORD_TYPE)) {
+//            add(new CacheEntry(ceTag, response.getSource()));
+//        } else {
+//            throw new RuntimeException("Unknown cache record type: " + response.getType());
+//        }
+//    }
 
     private void addBeginRecord(Map<String, Object> doc) {
         ceTag.expiry = (String) doc.get("expiry");

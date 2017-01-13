@@ -2,8 +2,6 @@ package co.amasel.client.common;
 
 import com.amazonservices.mws.client.MwsObject;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
 
 import javax.crypto.Mac;
@@ -35,10 +33,6 @@ import java.util.regex.Pattern;
  * @author mayerj
  */
 public class MwsUtl {
-
-    /** Commons logging. */
-    @SuppressWarnings("unused")
-    private static final Log log = LogFactory.getLog(MwsUtl.class);
 
     /** Match an asterisk character. */
     private static final Pattern asteriskPtn = Pattern.compile("*", Pattern.LITERAL);

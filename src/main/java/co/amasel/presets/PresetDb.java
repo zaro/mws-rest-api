@@ -1,7 +1,7 @@
 package co.amasel.presets;
 
 import co.amasel.misc.RuntimeConfiguration;
-import com.google.common.util.concurrent.FutureFallback;
+//import com.google.common.util.concurrent.FutureFallback;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -102,7 +102,12 @@ public class PresetDb {
                     result.complete(preset.result());
                     return;
                 }
-                Iterator it = preset.result().iterator();
+                JsonObject presetObject = preset.result();
+                if (presetObject == null) {
+                    result.fail("Preset '" + key + "' now found!");
+                    return;
+                }
+                Iterator it = presetObject.iterator();
                 while(it.hasNext()){
                     Map.Entry<String, Object> kv = (Map.Entry<String, Object>) it.next();
                     if(!value.containsKey(kv.getKey())){

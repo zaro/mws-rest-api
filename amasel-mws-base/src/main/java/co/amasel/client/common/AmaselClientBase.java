@@ -51,6 +51,10 @@ public abstract class AmaselClientBase {
         this.userAgent = userAgent;
     }
 
+    public String clientIdString() {
+        return String.format("<%08x>",this.hashCode());
+    }
+
 
     public MwsObject createRequestFromJson(MwsApiCall apiCallDescription, JsonObject obj) throws AmaselClientException {
         if (apiCallDescription == null) {
