@@ -10,7 +10,7 @@ if [ ! -f .maven_deps ]; then
 fi
 
 ./gradlew clean
-./gradlew installDist
+./gradlew :installDist
 
 echo 'web: /srv/home/www/live/bin/mws-rest-api' > ./Procfile
 
