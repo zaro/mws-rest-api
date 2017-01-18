@@ -1,6 +1,13 @@
 #!/bin/bash
 
+export GRADLE_OPTS="-Dorg.gradle.daemon=false"
+
 set -e
+
+if [ ! -f .maven_deps ]; then
+  (cd mws-libs-from-amazon; ./install.sh)
+  touch .maven_deps
+fi
 
 ./gradlew clean
 ./gradlew installDist

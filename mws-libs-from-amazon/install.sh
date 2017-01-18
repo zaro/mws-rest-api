@@ -54,13 +54,16 @@ function install {
   GRADLE_DEPS+=("$GROUP_ID:$ARTIFACT_ID:$ARTIFACT_VERSION")
 }
 
-install "amazon-mws-v20090101-java-2016-09-21._V278445245_.zip" "dist/MaWSJavaClientLibrary-1.1.jar" "amazon-mws-feeds-reports" "1.1" "src"
+
 install "MWSOrdersJavaClientLibrary-2013-09-01._V293334172_.zip" "dist/MWSClientJavaRuntime-1.0.jar" "amazon-mws-runtime" "1.0" "runtime-src"
+
+if [[ "$1" == "codegen" ]]; then
+install "amazon-mws-v20090101-java-2016-09-21._V278445245_.zip" "dist/MaWSJavaClientLibrary-1.1.jar" "amazon-mws-feeds-reports" "1.1" "src"
 install "MWSOrdersJavaClientLibrary-2013-09-01._V293334172_.zip" "dist/MWSOrders_2013-09-01_v2015-09-24.jar" "amazon-mws-orders" "v2015-09-24" "src"
 install "MWSProductsJavaClientLibrary-2011-10-01._V269521071_.zip" "dist/MWSProducts_2011-10-01_v2016-06-01.jar" "amazon-mws-products" "v2016-06-01" "src"
 install "MWSSellersJavaClientLibrary-2011-07-01._V325005493_.zip" "dist/MWSSellers_2011-07-01_v2014-09-30.jar" "amazon-mws-sellers" "v2014-09-30" "src"
 install "MWSRecommendationsJavaClientLibrary-2013-04-01._V323647919_.zip" "dist/MWSRecommendations_2013-04-01_v2014-10-01.jar" "amazon-mws-recommendations" "v2014-10-01" "src"
-
+fi
 
 echo Add this to your gradle build section:
 for dep in "${GRADLE_DEPS[@]}"
