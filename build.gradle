@@ -54,19 +54,22 @@ dependencies {
 
 mainClassName = 'MwsRestApiMain'
 
+tasks.withType(JavaExec)  {
+    doFirst {
+        applicationDefaultJvmArgs = []
+    }
+
+    systemProperties([
+            'mwsRestApi.prefix'                        : './',
+            'vertx.logger-delegate-factory-class-name': 'io.vertx.core.logging.SLF4JLogDelegateFactory'
+    ])
+}
 
 applicationDefaultJvmArgs = [
        "-DmwsRestApi.prefix=MWS_REST_API_HOME",
        "-Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory",
 ]
 
-tasks.withType(JavaExec)  {
-    systemProperties([
-            'mwsRestApi.prefix'                        : './',
-            'vertx.logger-delegate-factory-class-name': 'io.vertx.core.logging.SLF4JLogDelegateFactory'
-    ])
-    applicationDefaultJvmArgs = []
-}
 
 startScripts {
     doLast {

@@ -4,4 +4,5 @@
 .vertx
 build/
 db/
+cfg/config.json
 mws-libs-from-amazon/sources/

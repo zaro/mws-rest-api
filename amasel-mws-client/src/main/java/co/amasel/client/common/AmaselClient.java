@@ -207,6 +207,12 @@ public class AmaselClient extends AmaselClientBase {
                     String responseString = totalBuffer.toString();
                     MwsXmlReader reader = new MwsXmlReader(responseString);
                     if (logger.isDebugEnabled() ) {
+                        logger.debug(String.format("%s QUOTA: %.1f/%.1f  reset@ %4$tF %4$tT",
+                                clientIdString(),
+                                responseObject.getMwsHeaderMetadata().getQuotaRemaining(),
+                                responseObject.getMwsHeaderMetadata().getQuotaMax(),
+                                responseObject.getMwsHeaderMetadata().getQuotaResetsAt()
+                                ));
                         logger.debug(clientIdString() + " RECEIVED: " + responseString);
                     }
                     if (response.statusCode() == 200) {
