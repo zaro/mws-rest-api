@@ -14,4 +14,4 @@ fi
 
 echo 'web: /srv/home/www/live/bin/mws-rest-api' > ./Procfile
 
-rsync -P build/install/mws-rest-api/ live/
+rsync -aP build/install/mws-rest-api/ live/
