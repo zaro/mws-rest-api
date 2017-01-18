@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+./gradle clean
+./gradle installDist
+
+echo 'web: /srv/home/www/bin/mws-rest-api' > ./Procfile
+
+rsync -P build/install/mws-rest-api/ live/
