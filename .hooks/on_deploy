@@ -2,9 +2,9 @@
 
 set -e
 
-./gradle clean
-./gradle installDist
+./gradlew clean
+./gradlew installDist
 
-echo 'web: /srv/home/www/bin/mws-rest-api' > ./Procfile
+echo 'web: /srv/home/www/live/bin/mws-rest-api' > ./Procfile
 
 rsync -P build/install/mws-rest-api/ live/
