@@ -1,4 +1,4 @@
-
+Some Vertx resources: https://github.com/vert-x3/vertx-awesome
 
 Preset for amazon connection:
 

@@ -13,12 +13,39 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
+import java.util.*;
 
 /**
  * Created by zaro on 1/7/17.
  */
 public class MwsXmlFeedPostDataTransformer extends MwsPostDataTransformer {
-
+    static protected Map<String, List<String>> FIELD_ORDERS = new HashMap<>();
+    static {
+        FIELD_ORDERS.put("Inventory", Arrays.asList(
+                "SKU", "FulfillmentCenterID", "Available", "Quantity", "Lookup",
+                "RestockDate", "FulfillmentLatency", "SwitchFulfillmentTo"
+        ));
+        FIELD_ORDERS.put("Price",Arrays.asList(
+                "SKU" ,"StandardPrice", "MAP", "DepositAmount",
+                "Sale", "Previous"
+        ));
+        FIELD_ORDERS.put("ProductImage",Arrays.asList(
+                "SKU" ,"ImageType", "ImageLocation"
+        ));
+        // TODO: complete the lists below
+        FIELD_ORDERS.put("Product",Arrays.asList(
+                "SKU"
+        ));
+        FIELD_ORDERS.put("Relationship",Arrays.asList(
+                "ParentSKU"
+        ));
+        FIELD_ORDERS.put("OrderFulfillment",Arrays.asList(
+                "AmazonOrderID", "MerchantOrderID", "MerchantFulfillmentID",
+                "FulfillmentDate",
+                "FulfillmentData", // Complex SEQUENCE TODO
+                "Item" // Complex SEQUENCE TODO
+        ));
+    }
     protected String sellerId;
     protected String body;
     protected String contentType;
@@ -67,8 +94,21 @@ public class MwsXmlFeedPostDataTransformer extends MwsPostDataTransformer {
         message.appendChild(makeElement("OperationType", jsonMessage.getString("OperationType", "Update")));
 
         Element messageContent = doc.createElement(messageType);
-        for(String key: jsonMessage.fieldNames()) {
-            messageContent.appendChild(makeElement(key, String.valueOf(jsonMessage.getValue(key))));
+        Set<String> usedKeys = new HashSet<>();
+
+        if( FIELD_ORDERS.containsKey(messageType) ){
+            for (String key : FIELD_ORDERS.get(messageType) ) {
+                if(jsonMessage.containsKey(key)) {
+                    messageContent.appendChild(makeElement(key, String.valueOf(jsonMessage.getValue(key))));
+                    usedKeys.add(key);
+                }
+            }
+
+        }
+        for (String key : jsonMessage.fieldNames()) {
+            if(!usedKeys.contains(key)) {
+                messageContent.appendChild(makeElement(key, String.valueOf(jsonMessage.getValue(key))));
+            }
         }
 
         message.appendChild(messageContent);
