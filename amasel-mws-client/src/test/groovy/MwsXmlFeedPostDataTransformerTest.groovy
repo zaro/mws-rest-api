@@ -2,32 +2,20 @@
  * Created by zaro on 1/7/17.
  */
 
+import co.amasel.client.common.MwsXmlFeedPostDataTransformer
 import io.vertx.core.json.JsonObject
 import io.vertx.groovy.ext.unit.TestContext
-import io.vertx.groovy.ext.unit.TestSuite
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.StringDescription
+import io.vertx.groovy.ext.unit.junit.VertxUnitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 import org.xmlunit.matchers.CompareMatcher
 
-def suite = TestSuite.create("co.amasel.client.common.MwsXmlFeedPostDataTransformer")
+@RunWith(VertxUnitRunner.class)
+public class MwsXmlFeedPostDataTransformerTest {
 
-
-static <T> void assertThat(TestContext context, String reason,
-                           T actual, Matcher<? super T> matcher) {
-    if (!matcher.matches(actual)) {
-        Description description = new StringDescription();
-        description.appendText(reason)
-                .appendText("\nExpected: ")
-                .appendDescriptionOf(matcher)
-                .appendText("\n     but: ");
-        matcher.describeMismatch(actual, description);
-        context.fail(description.toString());
-    }
-}
-
-suite.test("FeedContent", { context ->
-    JsonObject json = new JsonObject('''{
+    @Test
+    void testMwsXmlFeedPostDataTransformer(TestContext context) {
+        JsonObject json = new JsonObject('''{
                 "SellerId" : "M_SELLER_354577",
                 "MWSAuthToken" : "authToken",
                 "MarketplaceId" : "marketPlaceId",
@@ -50,7 +38,7 @@ suite.test("FeedContent", { context ->
                 }
             }''');
 
-    def xml = '''<?xml version="1.0" encoding="UTF-8"?>
+        def xml = '''<?xml version="1.0" encoding="UTF-8"?>
 <AmazonEnvelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="amzn-envelope.xsd">
     <Header>
         <DocumentVersion>1.01</DocumentVersion>
@@ -76,15 +64,10 @@ suite.test("FeedContent", { context ->
         </Inventory>
     </Message>
 </AmazonEnvelope>''';
-    println MwsXmlFeedPostDataTransformer.methods*.name.sort().unique()
-    def converter = new co.amasel.client.common.MwsXmlFeedPostDataTransformer(json);
-    assertThat(context, 'XML different' ,converter.getPostData(), CompareMatcher.isSimilarTo(xml).ignoreWhitespace())
-});
+        def converter = new MwsXmlFeedPostDataTransformer();
+        converter.init(json);
+        TestsCommon.assertThat(context, 'XML different' ,converter.getPostData(), CompareMatcher.isSimilarTo(xml).ignoreWhitespace())
 
-suite.run([
-        reporters: [
-                [ to: "console" ]
-        ]
-]).handler({ ar ->
-    System.exit( ar.succeeded() ? 0 : -1)
-})
+    }
+
+}

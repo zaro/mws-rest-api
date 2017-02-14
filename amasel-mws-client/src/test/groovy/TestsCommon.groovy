@@ -1,3 +1,8 @@
+import io.vertx.groovy.ext.unit.TestContext
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.StringDescription
+
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 
@@ -14,6 +19,19 @@ import java.util.jar.JarFile
  * @throws IOException
  */
 class TestsCommon {
+    static <T> void assertThat(TestContext context, String reason,
+                               T actual, Matcher<? super T> matcher) {
+        if (!matcher.matches(actual)) {
+            Description description = new StringDescription();
+            description.appendText(reason)
+                    .appendText("\nExpected: ")
+                    .appendDescriptionOf(matcher)
+                    .appendText("\n     but: ");
+            matcher.describeMismatch(actual, description);
+            context.fail(description.toString());
+        }
+    }
+
     // Taken from : http://www.uofr.net/~greg/java/get-resource-listing.html
     static String[] listResourceDir(String path){
         Class clazz = TestsCommon.class

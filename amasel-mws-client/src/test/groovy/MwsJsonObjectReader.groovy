@@ -1,4 +1,4 @@
-import co.amasel.misc.JsonObjectToBean
+import co.amasel.client.misc.JsonObjectToBean
 //import com.amazonservices.mws.products.model.GetCompetitivePricingForASINRequest
 //import com.amazonservices.mws.products.model.GetCompetitivePricingForSKURequest
 //import com.amazonservices.mws.products.model.GetLowestOfferListingsForASINRequest

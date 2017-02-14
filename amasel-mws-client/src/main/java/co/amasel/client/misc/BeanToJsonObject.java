@@ -1,10 +1,10 @@
-package co.amasel.misc;
-
+package co.amasel.client.misc;
+//
+//import co.amasel.misc.BeanAccess;
 //import com.amazonservices.mws.products.model.GetCompetitivePricingForSKURequest;
 //import com.amazonservices.mws.products.model.SellerSKUListType;
 //import io.vertx.core.json.JsonArray;
 //import io.vertx.core.json.JsonObject;
-////import jodd.bean.BeanUtil;
 //
 //import javax.xml.bind.annotation.XmlElement;
 //import javax.xml.datatype.XMLGregorianCalendar;
@@ -14,12 +14,13 @@ package co.amasel.misc;
 //import java.math.BigInteger;
 //import java.text.SimpleDateFormat;
 //import java.util.*;
-
-/**
- * Created by zaro on 11/23/15.
- */
-public class BeanToPostParameters {
+//
+///**
+// * Created by zaro on 11/23/15.
+// */
+//public class BeanToJsonObject {
 //    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+//
 //    static {
 //        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 //    }
@@ -34,50 +35,59 @@ public class BeanToPostParameters {
 //    }
 //
 //    public static String getFieldName(Object bean, Field field) {
-//        if (BeanUtil.hasProperty(bean, field.getName())) {
+//        if (BeanAccess.hasProperty(bean, field.getName())) {
 //            return field.getName();
 //        }
 //        return null;
 //    }
 //
 //
-//    public void beanParamList(Object bean) {
+//    public static Object beanToObject(Object bean) {
+//        return beanToObject(bean, false);
+//    }
+//    public static Object beanToObject(Object bean, boolean hintList) {
 //        if (bean == null){
-//            return;
+//            return null;
 //        }
 //        Class beanClass = bean.getClass();
-//        if (beanClass.isPrimitive() ||
-//            beanClass == BigDecimal.class || beanClass == BigInteger.class ||
-//            String.class.isAssignableFrom(beanClass) ||
-//            XMLGregorianCalendar.class.isAssignableFrom(beanClass) ||
-//            Boolean.class.isAssignableFrom(beanClass)
-//            ){
-//            parameters.put(getPrefix(), bean.toString());
+//        if (beanClass.isPrimitive()) {
+//            return bean;
+//        }
+//        if (beanClass == BigDecimal.class || beanClass == BigInteger.class) {
+//            return bean.toString();
+//        }
+//        if (String.class.isAssignableFrom(beanClass)) {
+//            return bean;
+//        }
+//        if (Boolean.class.isAssignableFrom(beanClass)) {
+//            return bean;
 //        }
 //        if (Date.class.isAssignableFrom(beanClass)) {
-//            parameters.put(getPrefix(), BeanToJsonObject.dateFormat.format(bean));
+//            return dateFormat.format(bean);
+//        }
+//        if (XMLGregorianCalendar.class.isAssignableFrom(beanClass)){
+//            return dateFormat.format(((XMLGregorianCalendar)bean).toGregorianCalendar().getTime());
 //        }
 //        if (Calendar.class.isAssignableFrom(beanClass)){
-//            parameters.put(getPrefix(), BeanToJsonObject.dateFormat.format(((Calendar)bean).getTime()));
+//            return dateFormat.format(((Calendar)bean).getTime());
 //        }
 //        if (List.class.isAssignableFrom(beanClass)){
 //            JsonArray arr = new JsonArray();
-//            int i=1;
 //            for(Object o: ((List)bean) ) {
-//                pushPrefix(String.valueOf(i));
-//                beanParamList(o);
-//                popPrefix();
+//                arr.add(beanToObject(o));
 //            }
+//            return arr;
 //        }
 //        if (Map.class.isAssignableFrom(beanClass)) {
 //            JsonObject obj = new JsonObject();
 //            for(Object e: ((Map)bean).entrySet() ){
 //                Map.Entry entry = (Map.Entry)e;
-//                pushPrefix( entry.getKey().toString() );
-//                beanParamList(entry.getValue());
-//                popPrefix();
+//                obj.put( entry.getKey().toString(), beanToObject(entry.getValue()) );
 //            }
+//            return obj;
 //        }
+//        // bean conversion
+//        JsonObject obj = new JsonObject();
 //        for( Field field: bean.getClass().getDeclaredFields() ){
 //            Class fieldClass = field.getType();
 //            String name = getFieldName(bean, field);
@@ -86,45 +96,31 @@ public class BeanToPostParameters {
 //            if(name == null){
 //                continue;
 //            }
-//            pushPrefix(xmlFieldName);
-//            beanParamList( BeanUtil.getProperty(bean, name));
+//            Object value = null;
+//            value = beanToObject( BeanAccess.getProperty(bean, name), xmlFieldName.endsWith("List"));
+//            obj.put(xmlFieldName, value);
 //        }
+//        if( obj.size() == 1 && hintList){
+//            Map.Entry<String,Object> it = obj.iterator().next();
+//            return it.getValue();
+//        }
+//        return obj;
 //    }
-//
-//    Map<String, String> parameters = new TreeMap<>();
-//    List<String> prefix = new ArrayList<>();
-//
-//    public void pushPrefix(String p){
-//        prefix.add(p);
-//    }
-//    public void popPrefix(){
-//        prefix.remove( prefix.size() - 1);
-//    }
-//
-//    public String getPrefix(){
-//        return String.join(".", prefix);
-//    }
-//
-//    public Map<String, String> getParameters(){
-//        return parameters;
-//    }
-//
-//    public void addBean(Object bean)  {
-//        beanParamList(bean);
+//    public static JsonObject fromBean(Object bean)  {
+//        Object result = beanToObject(bean);
+//        if(JsonObject.class.isAssignableFrom(result.getClass())){
+//            return (JsonObject) result;
+//        }
+//        JsonObject obj = new JsonObject();
+//        obj.put("beanAsJson", result);
+//        return obj;
 //    }
 //
 //    public static void main(String[] args){
 //        GetCompetitivePricingForSKURequest req = new GetCompetitivePricingForSKURequest();
 //        req.setSellerId("SellerId");
 //        req.setSellerSKUList(new SellerSKUListType(Arrays.asList("id1", "id2")));
-//        BeanToPostParameters p = new BeanToPostParameters();
-//
-//        long startTime = System.currentTimeMillis();
-//        p.addBean(req);
-//
-//        long stopTime = System.currentTimeMillis();
-//        long elapsedTime = stopTime - startTime;
-//        System.out.println(elapsedTime);
+//        System.out.print(fromBean(req).encodePrettily());
 //    }
-}
-
+//}
+//

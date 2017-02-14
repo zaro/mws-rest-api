@@ -4,57 +4,62 @@ import com.amazonservices.mws.client.MwsJsonWriter
 import com.amazonservices.mws.client.MwsObject
 import com.amazonservices.mws.client.MwsXmlReader
 import io.vertx.core.json.JsonObject
+import io.vertx.groovy.ext.unit.TestContext
 import io.vertx.groovy.ext.unit.TestSuite
+import io.vertx.groovy.ext.unit.junit.VertxUnitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
 
-def suite = TestSuite.create("co.amasel.model")
 
-def classes =[
-//        'feeds': [
-//                    'CancelFeedSubmissionsResponse',
-//                    'ErrorResponse',
-//                    'GetFeedSubmissionCountResponse',
-//                    'GetFeedSubmissionListByNextTokenResponse',
-//                    'GetFeedSubmissionListResponse',
-//                    'GetFeedSubmissionResultResponse',
-//                    'SubmitFeedResponse',
-//                ],
-//        'reports': [
-//                'CancelReportRequestsResponse',
-//                'ErrorResponse',
-//                'GetReportCountResponse',
-//                'GetReportListByNextTokenResponse',
-//                'GetReportListResponse',
-//                'GetReportRequestCountResponse',
-//                'GetReportRequestListByNextTokenResponse',
-//                'GetReportRequestListResponse',
-//                'GetReportResponse',
-//                'GetReportScheduleCountResponse',
-//                'GetReportScheduleListByNextTokenResponse',
-//                'GetReportScheduleListResponse',
-//                'ManageReportScheduleResponse',
-//                'RequestReportResponse',
-//                'UpdateReportAcknowledgementsResponse',
-//        ],
+@RunWith(VertxUnitRunner.class)
+public class ModelTest {
+    def classes =[
+        'feeds': [
+                    'CancelFeedSubmissionsResponse',
+                    'ErrorResponse',
+                    'GetFeedSubmissionCountResponse',
+                    'GetFeedSubmissionListByNextTokenResponse',
+                    'GetFeedSubmissionListResponse',
+                    'GetFeedSubmissionResultResponse',
+                    'SubmitFeedResponse',
+                ],
+        'reports': [
+                'CancelReportRequestsResponse',
+                'ErrorResponse',
+                'GetReportCountResponse',
+                'GetReportListByNextTokenResponse',
+                'GetReportListResponse',
+                'GetReportRequestCountResponse',
+                'GetReportRequestListByNextTokenResponse',
+                'GetReportRequestListResponse',
+                'GetReportResponse',
+                'GetReportScheduleCountResponse',
+                'GetReportScheduleListByNextTokenResponse',
+                'GetReportScheduleListResponse',
+                'ManageReportScheduleResponse',
+                'RequestReportResponse',
+                'UpdateReportAcknowledgementsResponse',
+        ],
         'products': [
-                //'ErrorResponse',
-//                'GetCompetitivePricingForASINResponse',
-//                'GetCompetitivePricingForSKUResponse',
-//                'GetLowestOfferListingsForASINResponse',
-//                'GetLowestOfferListingsForSKUResponse',
-//                'GetLowestPricedOffersForASINResponse',
-//                'GetLowestPricedOffersForSKUResponse',
+            'ErrorResponse',
+                'GetCompetitivePricingForASINResponse',
+                'GetCompetitivePricingForSKUResponse',
+                'GetLowestOfferListingsForASINResponse',
+                'GetLowestOfferListingsForSKUResponse',
+                'GetLowestPricedOffersForASINResponse',
+                'GetLowestPricedOffersForSKUResponse',
                 'GetMatchingProductForIdResponse',
-//                'GetMatchingProductResponse',
-//                'GetMyPriceForASINResponse',
-//                'GetMyPriceForSKUResponse',
-//                'GetProductCategoriesForASINResponse',
-//                'GetProductCategoriesForSKUResponse',
-//                'GetServiceStatusResponse',
-//                'ListMatchingProductsResponse',
+                'GetMatchingProductResponse',
+                'GetMyPriceForASINResponse',
+                'GetMyPriceForSKUResponse',
+                'GetProductCategoriesForASINResponse',
+                'GetProductCategoriesForSKUResponse',
+                'GetServiceStatusResponse',
+                'ListMatchingProductsResponse',
         ]
-]
+    ]
 
-def testXml = """<?xml version="1.0"?>
+    def testXml = """<?xml version="1.0"?>
 <GetMatchingProductForIdResponse
   xmlns="http://mws.amazonservices.com/schema/Products/2011-10-01">
   <GetMatchingProductForIdResult Id="ak 950" IdType="SellerSKU" status="Success">
@@ -109,7 +114,7 @@ def testXml = """<?xml version="1.0"?>
   </ResponseMetadata>
 </GetMatchingProductForIdResponse>
 """
-def testJson = """
+    def testJson = """
 <GetMatchingProductForIdResponse
   xmlns="http://mws.amazonservices.com/schema/Products/2011-10-01">
   <GetMatchingProductForIdResult Id="ak 950" IdType="SellerSKU" status="Success">
@@ -166,7 +171,22 @@ def testJson = """
 """
 
 
-//classes.each { pkgName , clsList ->
+    @Test
+    void testGetMatchingProductForIdResponse(TestContext context) {
+        InputStream stream = new ByteArrayInputStream(testXml.getBytes("UTF-8"));
+        MwsXmlReader reader = new MwsXmlReader(stream)
+        MwsObject o = new GetMatchingProductForIdResponse();
+        o.readFragmentFrom(reader)
+        def or = new OutputStreamWriter(System.out)
+        MwsJsonObjectWriter writer = new MwsJsonObjectWriter()
+        o.writeFragmentTo(writer)
+        or.flush()
+        //print writer.getJsonObject().encodePrettily()
+        //context.assertTrue(true)
+
+    }
+
+    //classes.each { pkgName , clsList ->
 //    clsList.each { clsName ->
 //        suite.test(clsName, { context ->
 //            def xmlFileResourse = "/co/amasel/model/${pkgName}/mock/${clsName}.xml";
@@ -184,24 +204,4 @@ def testJson = """
 //        });
 //    }
 //}
-
-suite.test("GetMatchingProductForIdResponse", { context ->
-    InputStream stream = new ByteArrayInputStream( testXml.getBytes( "UTF-8" ) );
-    MwsXmlReader reader = new MwsXmlReader(stream)
-    MwsObject o = new GetMatchingProductForIdResponse();
-    o.readFragmentFrom(reader)
-    def or = new OutputStreamWriter(System.out)
-    MwsJsonObjectWriter writer = new MwsJsonObjectWriter()
-    o.writeFragmentTo(writer)
-    or.flush()
-    print writer.getJsonObject().encodePrettily()
-    context.assertTrue(true)
-});
-
-suite.run([
- reporters: [
-         [ to: "console" ]
- ]
-]).handler({ ar ->
-    System.exit( ar.succeeded() ? 0 : -1)
-})
+}

@@ -1,4 +1,4 @@
-package co.amasel.misc;
+package co.amasel.client.misc;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

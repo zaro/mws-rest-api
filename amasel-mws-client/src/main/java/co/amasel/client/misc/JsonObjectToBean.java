@@ -1,4 +1,4 @@
-package co.amasel.misc;
+package co.amasel.client.misc;
 
 //import co.amasel.JsonParseException;
 //import co.amasel.misc.BeanToJsonObject;
