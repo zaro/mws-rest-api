@@ -95,6 +95,8 @@ public class MwsXmlFeedPostDataTransformer extends MwsPostDataTransformer {
 
         Element messageContent = doc.createElement(messageType);
         Set<String> usedKeys = new HashSet<>();
+        usedKeys.add("MessageID");
+        usedKeys.add("OperationType");
 
         if( FIELD_ORDERS.containsKey(messageType) ){
             for (String key : FIELD_ORDERS.get(messageType) ) {
