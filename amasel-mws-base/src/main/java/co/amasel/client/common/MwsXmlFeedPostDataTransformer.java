@@ -90,7 +90,7 @@ public class MwsXmlFeedPostDataTransformer extends MwsPostDataTransformer {
 
     protected Node makeMessage(String messageType, JsonObject jsonMessage){
         Element message = doc.createElement("Message");
-        message.appendChild(makeElement("MessageID", String.valueOf(messageId++)));
+        message.appendChild(makeElement("MessageID", String.valueOf(jsonMessage.getValue("MessageID", messageId++))));
         message.appendChild(makeElement("OperationType", jsonMessage.getString("OperationType", "Update")));
 
         Element messageContent = doc.createElement(messageType);
