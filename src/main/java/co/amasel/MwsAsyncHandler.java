@@ -184,14 +184,16 @@ public class MwsAsyncHandler<AmaselClientClass extends AmaselClient> extends Abs
                                     outObj.put(resultKey, response.asJsonObjectOrArray(params));
                                 }
                                 if (params.meta) {
-                                    MwsResponseHeaderMetadata rhmd = response.response.getMwsHeaderMetadata();
                                     JsonObject o = new JsonObject();
-                                    o.put("requestId", rhmd.getRequestId());
-                                    o.put("responseContext", rhmd.getResponseContext());
-                                    o.put("timestamp", rhmd.getTimestamp());
-                                    o.put("quotaMax", rhmd.getQuotaMax());
-                                    o.put("quotaRemaining", rhmd.getQuotaRemaining());
-                                    o.put("quotaResetsAt", rhmd.getQuotaResetsAt() != null ? dateFormat.format(rhmd.getQuotaResetsAt()) : null);
+                                    if (response.response != null) {
+                                        MwsResponseHeaderMetadata rhmd = response.response.getMwsHeaderMetadata();
+                                        o.put("requestId", rhmd.getRequestId());
+                                        o.put("responseContext", rhmd.getResponseContext());
+                                        o.put("timestamp", rhmd.getTimestamp());
+                                        o.put("quotaMax", rhmd.getQuotaMax());
+                                        o.put("quotaRemaining", rhmd.getQuotaRemaining());
+                                        o.put("quotaResetsAt", rhmd.getQuotaResetsAt() != null ? dateFormat.format(rhmd.getQuotaResetsAt()) : null);
+                                    }
                                     o.put("timeElapsed", elapsedTime);
                                     outObj.put("_meta", o);
                                 }
