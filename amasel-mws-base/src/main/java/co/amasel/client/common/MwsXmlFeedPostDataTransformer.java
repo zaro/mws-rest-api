@@ -1,5 +1,6 @@
 package co.amasel.client.common;
 
+import co.amasel.model.common.AmaselMwsException;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.w3c.dom.Document;
@@ -13,6 +14,8 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -49,6 +52,7 @@ public class MwsXmlFeedPostDataTransformer extends MwsPostDataTransformer {
     protected String sellerId;
     protected String body;
     protected String contentType;
+    protected String encoding;
     protected int messageId;
 
     Document doc;
@@ -56,8 +60,9 @@ public class MwsXmlFeedPostDataTransformer extends MwsPostDataTransformer {
     public MwsXmlFeedPostDataTransformer(){
     }
 
-    public MwsXmlFeedPostDataTransformer init(JsonObject request){
-        super.init(request);
+    public MwsXmlFeedPostDataTransformer init(JsonObject request, String encoding){
+        super.init(request, encoding);
+        this.encoding = encoding;
         this.sellerId = request.getString("SellerId");
         messageId = 1;
         getDocument();
@@ -155,6 +160,7 @@ public class MwsXmlFeedPostDataTransformer extends MwsPostDataTransformer {
             e.printStackTrace();
         }
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
         DOMSource source = new DOMSource(doc);
         StringWriter writer = new StringWriter();
@@ -165,19 +171,29 @@ public class MwsXmlFeedPostDataTransformer extends MwsPostDataTransformer {
             e.printStackTrace();
         }
         body = writer.getBuffer().toString();
-        contentType = "application/xml; charset=utf-8";
+        contentType = "application/xml; charset=" + encoding;
     }
 
     public boolean hasPostData() {
         return body != null;
     }
 
-    public String getPostData() {
+    public byte[] getPostData() {
+        if (body == null){
+            return  null;
+        }
+        try {
+            return body.getBytes(encoding);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new AmaselClientException("Unsupported encoding:" + encoding);
+        }
+    }
+    public String getPostDataAsString() {
         return body;
     }
-
     public String getContentType() {
-        return contentType;
+        return contentType ;
     }
 
 }

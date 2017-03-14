@@ -36,4 +36,18 @@ public class AmazonMwsEndpoint extends MwsEndpoints {
         return tagOrURL;
     }
 
+    public static String getEndpointEncoding(String tagOrURL){
+        URI u = tagMap.get(tagOrURL.toLowerCase());
+        if (u != null){
+            tagOrURL = u.toString();
+        }
+        if(tagOrURL.endsWith(".com.cn")) {
+            return "utf-8";
+        }
+        if(tagOrURL.endsWith(".jp")) {
+            return "Shift_JIS";
+        }
+        return "iso-8859-1";
+    }
+
 }

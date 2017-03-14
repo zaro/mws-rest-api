@@ -40,10 +40,12 @@ public class AmaselCachedClient extends AmaselClient {
         if(apiCallDescription == null){
             throw new AmaselClientException("Invalid method description: null");
         }
+        String encoding = AmazonMwsEndpoint.getEndpointEncoding(endPoint);
+
         // Create a request.
         MwsObject request = createRequestFromJson(apiCallDescription, requestObject);
         MwsPostDataTransformer postData = apiCallDescription.makePostDataTransformer();
-        postData.init(requestObject);
+        postData.init(requestObject, encoding);
 
         new AmaselClientRequest(apiCallDescription, request,result, endPoint,credentials, postData, 3).makeRequest();
         return result;

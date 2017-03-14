@@ -111,14 +111,14 @@ public class AmaselClient extends AmaselClientBase {
             }
             logger.info(clientIdString() + " POST " + absUrl );
             if (postData.hasPostData() && logger.isDebugEnabled()) {
-                String lines[] = postData.getPostData().split("\\r?\\n");
+                String lines[] = postData.getPostDataAsString().split("\\r?\\n");
                 for(String line: lines){
                     logger.debug(clientIdString() + " POSTDATA: " + line);
                 }
             }
             try {
                 if(postData.hasPostData()) {
-                    request.end(postData.getPostData());
+                    request.end(Buffer.buffer(postData.getPostData()));
                 } else {
                     request.end();
                 }
@@ -290,10 +290,12 @@ public class AmaselClient extends AmaselClientBase {
         if(apiCallDescription == null){
             throw new AmaselClientException("Invalid method description: null");
         }
+        String encoding = AmazonMwsEndpoint.getEndpointEncoding(endPoint);
+
         // Create a request.
         MwsObject request = createRequestFromJson(apiCallDescription, requestObject);
         MwsPostDataTransformer postData = apiCallDescription.makePostDataTransformer();
-        postData.init(requestObject);
+        postData.init(requestObject, encoding);
 
         new AmaselClientRequest(apiCallDescription, request,result, endPoint,credentials, postData, this.numRetries).makeRequest();
         return result;

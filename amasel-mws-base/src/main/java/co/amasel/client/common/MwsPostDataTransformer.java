@@ -10,13 +10,17 @@ public class MwsPostDataTransformer {
     public MwsPostDataTransformer(){
     }
 
-    public MwsPostDataTransformer init(JsonObject request) { return this;}
+    public MwsPostDataTransformer init(JsonObject request, String encoding) { return this;}
 
     public boolean hasPostData() {
         return false;
     }
 
-    public String getPostData() {
+    public byte[] getPostData() {
+        return null;
+    }
+
+    public String getPostDataAsString() {
         return null;
     }
 
