@@ -103,12 +103,12 @@ List Orders:
 
 Supported APIS are :
 
-/mws/orders/{methodName}
-/mws/feeds/{methodName}
-/mws/products/{methodName}
-/mws/reports/{methodName}
-/mws/sellers/{methodName}
-/mws/recommendations/{methodName}
+- /mws/orders/{methodName}
+- /mws/feeds/{methodName}
+- /mws/products/{methodName}
+- /mws/reports/{methodName}
+- /mws/sellers/{methodName}
+- /mws/recommendations/{methodName}
 
 For list of the method names check the official MWS documentation: https://developer.amazonservices.com/
 
@@ -118,4 +118,6 @@ The arguments to the methods should be passed as JSON in the post request.
 
 **TODO**
 
+# Author
 
+Svetlozar Argirov <zarrro@gmail.com>
